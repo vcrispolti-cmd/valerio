@@ -23,11 +23,10 @@ enable "Trust access to the VBA project object model".
 
 ```
 data/
-  DiCocco_Data.dat            <- the actual data (129 records), used by ImportData
-  DiCocco_Data_preview.csv    <- same data, human-readable, for your reference only
+  DiCocco_Data_preview.csv    <- the data, human-readable, just for your reference
 vba/
   01_modSchema.bas             creates tables Opere + Config, and qryOpereOrdinate
-  02_modImportData.bas         imports data/DiCocco_Data.dat into Opere
+  02_modImportData.bas         imports directly from your .xlsx file into Opere
   03_modImageHelpers.bas       shared image-handling logic used by forms/reports
   04_modBuildForm_Edit.bas     builds frmOpereEdit (data entry, all fields incl. images)
   05_modBuildReport_Tabella.bas builds rptTabella (landscape grid + thumbnails)
@@ -36,51 +35,55 @@ vba/
   08_modMain.bas               RunAll orchestrator + frmMenu switchboard
 ```
 
-The data came from your Google Drive copy of the spreadsheet (both its
-sheets: "Database opere" and "Testo grezzo schede", merged one row per work).
+`ImportData` reads straight from your original Excel file using Access's own
+Excel importer (no intermediate data file, no manual copy/paste) — when you
+run it, it prompts you to browse to the `.xlsx` file. It expects the same two
+sheets the original file has ("Database opere" and "Testo grezzo schede");
+if the second one is missing it still imports everything else and just
+leaves the full-text field blank.
+
 The `Immagine recto/verso/laterale` and `Illustrazione 1-3` columns were
 empty in the source file (headers only, no filenames), so images are **not**
 pre-linked — you attach them per record after the build, see step 5 below.
 Neither the `DiCoccoImmagini_Schede` folder nor the reference PDF were
-reachable from this session, so the "Schede" report layout is my own design
-inspired by a typical museum catalog card rather than a copy of your PDF —
-easy to adjust once you can show me the PDF or describe changes.
+reachable from the session that generated this kit, so the "Schede" report
+layout is my own design inspired by a typical museum catalog card rather
+than a copy of your PDF — easy to adjust once you can show me the PDF or
+describe changes.
 
 ## Build steps (on your Windows PC, in Access)
 
 1. **Copy this whole `DiCoccoAccessDB` folder** to your PC, anywhere you like
-   (e.g. `Documents\DiCoccoAccessDB`). Keep `data/` next to where you'll save
-   the `.accdb` — `ImportData` looks for `data\DiCocco_Data.dat` relative to
-   the database file's own folder.
+   (e.g. `Documents\DiCoccoAccessDB`), and have your original
+   `Di_Cocco_Database_Schede_1913-1934.xlsx` file somewhere you can browse to
+   (it doesn't need to be in any particular folder).
 
-2. Open Access and create a **new blank desktop database**. Save it directly
-   inside `DiCoccoAccessDB` (next to the `data` folder), e.g. as
-   `DiCocco.accdb`.
+2. Open Access and create a **new blank desktop database** anywhere you like,
+   e.g. `DiCocco.accdb`. Access will show one empty table called **Table1**
+   by default in every new database — that's normal, it's not part of this
+   kit, and you can ignore or delete it.
 
 3. Open the VBA editor (**Alt+F11**). For each of the 8 files in `vba/`, use
    **File > Import File...** and import them in order (01 through 08). You
    should end up with 8 standard modules in the Project Explorer.
 
-4. If your `.accdb` isn't saved directly inside `DiCoccoAccessDB` (next to
-   `data/`), `ImportData` will pop up a file picker so you can browse
-   straight to `DiCocco_Data.dat` wherever you put it — you don't have to
-   match the folder layout exactly.
-
-5. Open the Immediate window (**Ctrl+G**), type:
+4. Open the Immediate window (**Ctrl+G**), type:
    ```
    RunAll
    ```
-   and press Enter. This creates the tables, imports all 129 records,
-   builds both forms and both reports, and opens a menu. A message box
-   confirms completion — if something goes wrong partway through, it tells
-   you which step failed with the exact Access error, so you can fix that
-   one piece (or send me the exact message).
+   and press Enter. This creates the tables, then prompts you to browse to
+   your `.xlsx` file, imports all 129 records from it, builds both forms and
+   both reports, and opens a menu. A message box confirms completion — if
+   something goes wrong partway through, it tells you which step failed with
+   the exact Access error, so you can fix that one piece (or send me the
+   exact message).
 
    You can re-run any single step from the Immediate window too, e.g.
    `BuildEditForm` or `BuildSchedeReport`, if you only need to rebuild one
-   piece after a tweak.
+   piece after a tweak. The actual imported data lives in a table called
+   **Opere** — that's the one to check, not Table1.
 
-6. **Link the images.** On the menu, click **"Imposta cartella immagini..."**
+5. **Link the images.** On the menu, click **"Imposta cartella immagini..."**
    and point it at your `DiCoccoImmagini_Schede` folder. Then open
    **"Inserisci / modifica schede"**, navigate to each record (arrows at the
    bottom of the form), and click the **"Sfoglia..."** button under each
