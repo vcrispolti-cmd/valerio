@@ -16,42 +16,45 @@ Public Sub CreateSchema()
     db.TableDefs.Refresh
     On Error GoTo ErrHandler
 
-    db.Execute "CREATE TABLE Opere (" & _
-        "ID COUNTER PRIMARY KEY, " & _
-        "NumeroScheda LONG, " & _
-        "Intestazione TEXT(50), " & _
-        "Titolo TEXT(255), " & _
-        "Anno TEXT(30), " & _
-        "NumeroArchivio TEXT(50), " & _
-        "Tecnica TEXT(255), " & _
-        "Dimensioni TEXT(100), " & _
-        "SegniRecto MEMO, " & _
-        "SegniVerso MEMO, " & _
-        "Collocazione TEXT(255), " & _
-        "Provenienza MEMO, " & _
-        "EsposizioniPersonali MEMO, " & _
-        "EsposizioniCollettive MEMO, " & _
-        "Bibliografia MEMO, " & _
-        "Note MEMO, " & _
-        "ImmagineRecto TEXT(260), " & _
-        "ImmagineVerso TEXT(260), " & _
-        "ImmagineLaterale TEXT(260), " & _
-        "Illustrazione1 TEXT(260), " & _
-        "Illustrazione2 TEXT(260), " & _
-        "Illustrazione3 TEXT(260), " & _
-        "PaginePDF TEXT(20), " & _
-        "TestoIntegrale MEMO" & _
-        ")", dbFailOnError
+    Dim sql As String
+    sql = "CREATE TABLE Opere ("
+    sql = sql & "ID COUNTER PRIMARY KEY, "
+    sql = sql & "NumeroScheda LONG, "
+    sql = sql & "Intestazione TEXT(50), "
+    sql = sql & "Titolo TEXT(255), "
+    sql = sql & "Anno TEXT(30), "
+    sql = sql & "NumeroArchivio TEXT(50), "
+    sql = sql & "Tecnica TEXT(255), "
+    sql = sql & "Dimensioni TEXT(100), "
+    sql = sql & "SegniRecto MEMO, "
+    sql = sql & "SegniVerso MEMO, "
+    sql = sql & "Collocazione TEXT(255), "
+    sql = sql & "Provenienza MEMO, "
+    sql = sql & "EsposizioniPersonali MEMO, "
+    sql = sql & "EsposizioniCollettive MEMO, "
+    sql = sql & "Bibliografia MEMO, "
+    sql = sql & "Note MEMO, "
+    sql = sql & "ImmagineRecto TEXT(260), "
+    sql = sql & "ImmagineVerso TEXT(260), "
+    sql = sql & "ImmagineLaterale TEXT(260), "
+    sql = sql & "Illustrazione1 TEXT(260), "
+    sql = sql & "Illustrazione2 TEXT(260), "
+    sql = sql & "Illustrazione3 TEXT(260), "
+    sql = sql & "PaginePDF TEXT(20), "
+    sql = sql & "TestoIntegrale MEMO"
+    sql = sql & ")"
+    db.Execute sql, dbFailOnError
 
     On Error Resume Next
     db.TableDefs.Delete "Config"
     db.TableDefs.Refresh
     On Error GoTo ErrHandler
 
-    db.Execute "CREATE TABLE Config (" & _
-        "ID COUNTER PRIMARY KEY, " & _
-        "ImagesFolder TEXT(260)" & _
-        ")", dbFailOnError
+    sql = "CREATE TABLE Config ("
+    sql = sql & "ID COUNTER PRIMARY KEY, "
+    sql = sql & "ImagesFolder TEXT(260)"
+    sql = sql & ")"
+    db.Execute sql, dbFailOnError
 
     db.Execute "INSERT INTO Config (ImagesFolder) VALUES ('')", dbFailOnError
 
