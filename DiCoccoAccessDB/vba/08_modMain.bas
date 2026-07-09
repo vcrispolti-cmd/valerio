@@ -95,21 +95,37 @@ ErrHandler:
 End Sub
 
 Public Function OpenEditForm() As Variant
-    On Error Resume Next
+    On Error GoTo ErrHandler
     DoCmd.OpenForm "frmOpereEdit"
+    Exit Function
+ErrHandler:
+    MsgBox "Impossibile aprire frmOpereEdit: " & Err.Number & " - " & Err.Description & vbCrLf & _
+           "Il form esiste nel Riquadro di spostamento? Se no, esegui modBuildForm_Edit.BuildEditForm.", vbExclamation, "OpenEditForm"
 End Function
 
 Public Function OpenSearchForm() As Variant
-    On Error Resume Next
+    On Error GoTo ErrHandler
     DoCmd.OpenForm "frmRicercaAvanzata"
+    Exit Function
+ErrHandler:
+    MsgBox "Impossibile aprire frmRicercaAvanzata: " & Err.Number & " - " & Err.Description & vbCrLf & _
+           "Il form esiste nel Riquadro di spostamento? Se no, esegui modBuildForm_Search.BuildSearchForm.", vbExclamation, "OpenSearchForm"
 End Function
 
 Public Function OpenTabellaAll() As Variant
-    On Error Resume Next
+    On Error GoTo ErrHandler
     DoCmd.OpenReport "rptTabella", acViewPreview
+    Exit Function
+ErrHandler:
+    MsgBox "Impossibile aprire rptTabella: " & Err.Number & " - " & Err.Description & vbCrLf & _
+           "Il report esiste nel Riquadro di spostamento? Se no, esegui modBuildReport_Tabella.BuildTabellaReport.", vbExclamation, "OpenTabellaAll"
 End Function
 
 Public Function OpenSchedeAll() As Variant
-    On Error Resume Next
+    On Error GoTo ErrHandler
     DoCmd.OpenReport "rptSchede", acViewPreview
+    Exit Function
+ErrHandler:
+    MsgBox "Impossibile aprire rptSchede: " & Err.Number & " - " & Err.Description & vbCrLf & _
+           "Il report esiste nel Riquadro di spostamento? Se no, esegui modBuildReport_Schede.BuildSchedeReport.", vbExclamation, "OpenSchedeAll"
 End Function

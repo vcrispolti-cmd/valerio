@@ -61,7 +61,12 @@ easy to adjust once you can show me the PDF or describe changes.
    **File > Import File...** and import them in order (01 through 08). You
    should end up with 8 standard modules in the Project Explorer.
 
-4. Open the Immediate window (**Ctrl+G**), type:
+4. If your `.accdb` isn't saved directly inside `DiCoccoAccessDB` (next to
+   `data/`), `ImportData` will pop up a file picker so you can browse
+   straight to `DiCocco_Data.dat` wherever you put it — you don't have to
+   match the folder layout exactly.
+
+5. Open the Immediate window (**Ctrl+G**), type:
    ```
    RunAll
    ```
@@ -75,7 +80,7 @@ easy to adjust once you can show me the PDF or describe changes.
    `BuildEditForm` or `BuildSchedeReport`, if you only need to rebuild one
    piece after a tweak.
 
-5. **Link the images.** On the menu, click **"Imposta cartella immagini..."**
+6. **Link the images.** On the menu, click **"Imposta cartella immagini..."**
    and point it at your `DiCoccoImmagini_Schede` folder. Then open
    **"Inserisci / modifica schede"**, navigate to each record (arrows at the
    bottom of the form), and click the **"Sfoglia..."** button under each

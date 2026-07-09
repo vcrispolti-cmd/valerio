@@ -24,10 +24,29 @@ Public Sub ImportData()
     filePath = CurrentProject.Path & "\data\DiCocco_Data.dat"
 
     If Dir(filePath) = "" Then
-        MsgBox "File dati non trovato:" & vbCrLf & filePath & vbCrLf & _
-               "Assicurati che la cartella 'data' (con DiCocco_Data.dat) sia " & _
-               "accanto al file .accdb.", vbExclamation, "ImportData"
-        Exit Sub
+        MsgBox "Non trovo il file dati nella posizione prevista:" & vbCrLf & filePath & vbCrLf & vbCrLf & _
+               "Nella finestra che si apre ora, seleziona tu DiCocco_Data.dat " & _
+               "(si trova nella cartella 'data' del pacchetto).", vbInformation, "ImportData"
+
+        Dim fd As Object
+        Set fd = Application.FileDialog(3) ' msoFileDialogFilePicker
+        fd.Title = "Seleziona DiCocco_Data.dat"
+        fd.Filters.Clear
+        fd.Filters.Add "File dati", "*.dat"
+        fd.Filters.Add "Tutti i file", "*.*"
+        fd.AllowMultiSelect = False
+
+        If fd.Show = -1 Then
+            filePath = fd.SelectedItems(1)
+        Else
+            MsgBox "Importazione annullata: nessun file selezionato.", vbExclamation, "ImportData"
+            Exit Sub
+        End If
+
+        If Dir(filePath) = "" Then
+            MsgBox "Il file selezionato non e' raggiungibile:" & vbCrLf & filePath, vbCritical, "ImportData"
+            Exit Sub
+        End If
     End If
 
     Set stm = CreateObject("ADODB.Stream")
