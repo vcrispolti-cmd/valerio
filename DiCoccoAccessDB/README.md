@@ -23,7 +23,9 @@ enable "Trust access to the VBA project object model".
 
 ```
 data/
-  DiCocco_Data_preview.csv    <- the data, human-readable, just for your reference
+  DiCocco_Data_preview.csv                                       <- original data, human-readable, for reference
+  Di_Cocco_Database_Schede_1913-1934_con_link_immagini.xlsx      <- your data + GUESSED image filenames (see below)
+  Di_Cocco_Database_Schede_con_link_immagini_preview.csv         <- just the guessed links, for quick review
 vba/
   01_modSchema.bas             creates tables Opere + Config, and qryOpereOrdinate
   02_modImportData.bas         imports directly from your .xlsx file into Opere
@@ -42,9 +44,33 @@ sheets the original file has ("Database opere" and "Testo grezzo schede");
 if the second one is missing it still imports everything else and just
 leaves the full-text field blank.
 
-The `Immagine recto/verso/laterale` and `Illustrazione 1-3` columns were
-empty in the source file (headers only, no filenames), so images are **not**
-pre-linked — you attach them per record after the build, see step 5 below.
+### About the image links
+
+The `Immagine recto/verso/laterale` columns were empty in your original
+file (headers only, no filenames) and I don't have access to your
+`DiCoccoImmagini_Schede` folder from this session, so I could not verify
+real filenames against real files. Instead,
+`Di_Cocco_Database_Schede_1913-1934_con_link_immagini.xlsx` is your data
+with those two columns **filled in with a guessed filename**, built purely
+from the `Numero d'archivio` field:
+
+- Recto: `<numero d'archivio>.jpg` (e.g. `1913 pc387.jpg`)
+- Verso: `<numero d'archivio> verso.jpg` (e.g. `1913 pc387 verso.jpg`)
+- Laterale: left blank (too speculative to guess)
+- Illustrazione 1-3: left blank (no basis to guess from)
+
+**This is unverified** — it only works if you rename/organize your actual
+image files to match that pattern. 122 of 129 records got a clean guess;
+7 have compound archive numbers (e.g. `"1924 p 278 (a) - 1930 p278 (b)"`,
+meaning recto and verso are literally different reused-canvas codes) that
+are flagged in the preview CSV and almost certainly need manual
+correction. Use this file with `ImportData` if the guessed pattern is
+close enough to be a useful starting point; otherwise keep using your
+original file and link images per record by hand via the "Sfoglia..."
+buttons on `frmOpereEdit`. If you can share the actual folder (or even
+just a file listing) at some point, I can match everything precisely
+instead of guessing.
+
 Neither the `DiCoccoImmagini_Schede` folder nor the reference PDF were
 reachable from the session that generated this kit, so the "Schede" report
 layout is my own design inspired by a typical museum catalog card rather
