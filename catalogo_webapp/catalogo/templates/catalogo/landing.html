@@ -1,0 +1,18 @@
+{% extends "catalogo/base.html" %}
+{% block title %}Catalogo Ragionato — Francesco Di Cocco{% endblock %}
+{% block content %}
+  <p class="intro">
+    Il catalogo ragionato documenta le opere note di Francesco Di Cocco, organizzate per
+    tipologia. Ogni scheda riporta dati, esposizioni e bibliografia.
+  </p>
+
+  <div class="sezioni-grid">
+    {% for sezione in sezioni %}
+      <a class="sezione-card" href="{% url 'catalogo:browse' sezione.slug %}">
+        <h2>{{ sezione.nome }}</h2>
+      </a>
+    {% empty %}
+      <p class="empty-state">Nessuna sezione configurata ancora — aggiungile dall'area amministrativa.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

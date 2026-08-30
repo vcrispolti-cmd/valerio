@@ -1,0 +1,27 @@
+{% load static %}<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Catalogo Ragionato{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+</head>
+<body>
+  <header class="site">
+    <a class="title" href="{% url 'catalogo:landing' %}">Francesco Di Cocco — Catalogo Ragionato</a>
+    <nav class="sezioni">
+      {% for sezione in sezioni_nav %}
+        <a href="{% url 'catalogo:browse' sezione.slug %}">{{ sezione.nome }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site">
+    Catalogo Ragionato — Fondo Francesco Di Cocco
+  </footer>
+</body>
+</html>

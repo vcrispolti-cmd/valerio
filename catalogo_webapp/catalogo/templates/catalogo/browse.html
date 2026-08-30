@@ -1,0 +1,53 @@
+{% extends "catalogo/base.html" %}
+{% block title %}{% if sezione %}{{ sezione.nome }} — {% endif %}Catalogo Ragionato{% endblock %}
+{% block content %}
+
+  <form class="filters" method="get">
+    <div class="field">
+      <label for="{{ filter.form.q.id_for_label }}">Cerca</label>
+      {{ filter.form.q }}
+    </div>
+    {% if not sezione %}
+      <div class="field">
+        <label for="{{ filter.form.tipo_opera.id_for_label }}">Sezione</label>
+        {{ filter.form.tipo_opera }}
+      </div>
+    {% endif %}
+    <div class="field">
+      <label for="{{ filter.form.anno_da.id_for_label }}">Anno da</label>
+      {{ filter.form.anno_da }}
+    </div>
+    <div class="field">
+      <label for="{{ filter.form.anno_a.id_for_label }}">Anno a</label>
+      {{ filter.form.anno_a }}
+    </div>
+    <div class="field">
+      <label for="{{ filter.form.tecnica.id_for_label }}">Tecnica</label>
+      {{ filter.form.tecnica }}
+    </div>
+    <button type="submit">Filtra</button>
+    <a class="reset" href="{% if sezione %}{% url 'catalogo:browse' sezione.slug %}{% else %}{% url 'catalogo:browse_all' %}{% endif %}">Azzera</a>
+  </form>
+
+  <div class="grid">
+    {% for opera in opere %}
+      <a class="opera-card" href="{% url 'catalogo:detail' opera.numero_archivio %}">
+        <div class="thumb">
+          {% with img=opera.immagini.first %}
+            {% if img %}
+              <img src="{{ img.file.url }}" alt="{{ img.didascalia|default:opera.titolo }}">
+            {% else %}
+              <span class="placeholder">Nessuna immagine</span>
+            {% endif %}
+          {% endwith %}
+        </div>
+        <div class="meta">
+          <div class="titolo">{{ opera.titolo }}</div>
+          <div class="anno">{{ opera.anno_testo }}</div>
+        </div>
+      </a>
+    {% empty %}
+      <p class="empty-state">Nessuna opera trovata con questi filtri.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "catalogo/base.html" %}
+{% block title %}{{ opera.titolo }} — Catalogo Ragionato{% endblock %}
+{% block content %}
+  <div class="opera-detail">
+    <div class="opera-images">
+      <div class="main-image">
+        {% with img=opera.immagini.first %}
+          {% if img %}
+            <img src="{{ img.file.url }}" alt="{{ img.didascalia|default:opera.titolo }}">
+          {% else %}
+            <span class="placeholder">Nessuna immagine</span>
+          {% endif %}
+        {% endwith %}
+      </div>
+      {% if opera.immagini.count > 1 %}
+        <div class="thumbs">
+          {% for img in opera.immagini.all %}
+            <img src="{{ img.file.url }}" alt="{{ img.didascalia }}">
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="opera-info">
+      <div class="archivio">{{ opera.numero_archivio }} — {{ opera.tipo_opera.nome }}</div>
+      <h1>{{ opera.titolo }}</h1>
+      <div class="anno">{{ opera.anno_testo }}</div>
+
+      <dl class="scheda">
+        {% if opera.tecnica %}<div><dt>Tecnica</dt><dd>{{ opera.tecnica }}</dd></div>{% endif %}
+        {% if opera.dimensioni_testo %}<div><dt>Dimensioni</dt><dd>{{ opera.dimensioni_testo }}</dd></div>{% endif %}
+        {% if opera.collezione %}<div><dt>Collezione</dt><dd>{{ opera.collezione.nome }}</dd></div>{% endif %}
+        {% if opera.provenienza %}<div><dt>Provenienza</dt><dd>{{ opera.provenienza }}</dd></div>{% endif %}
+      </dl>
+
+      {% if opera.note %}
+        <details class="panel">
+          <summary>Note</summary>
+          <p>{{ opera.note }}</p>
+        </details>
+      {% endif %}
+
+      {% if opera.segni_recto or opera.segni_verso %}
+        <details class="panel">
+          <summary>Segni e iscrizioni</summary>
+          {% if opera.segni_recto %}<p><strong>Recto:</strong> {{ opera.segni_recto }}</p>{% endif %}
+          {% if opera.segni_verso %}<p><strong>Verso:</strong> {{ opera.segni_verso }}</p>{% endif %}
+        </details>
+      {% endif %}
+
+      {% with esposizioni=opera.operamostra_set.all %}
+        {% if esposizioni %}
+          <details class="panel" open>
+            <summary>Esposizioni ({{ esposizioni|length }})</summary>
+            <ul>
+              {% for om in esposizioni %}
+                <li>
+                  <strong>{{ om.mostra.titolo }}</strong>, {{ om.mostra.anno_inizio }}{% if om.mostra.anno_fine and om.mostra.anno_fine != om.mostra.anno_inizio %}–{{ om.mostra.anno_fine }}{% endif %}
+                  {% for ms in om.mostra.mostrasede_set.all %}
+                    — {{ ms.sede.nome }}{% if ms.sede.citta %}, {{ ms.sede.citta }}{% endif %}
+                  {% endfor %}
+                  {% if om.sala %}(sala {{ om.sala }}){% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% endif %}
+      {% endwith %}
+
+      {% with citazioni=opera.bibliografia.all %}
+        {% if citazioni %}
+          <details class="panel" open>
+            <summary>Bibliografia ({{ citazioni|length }})</summary>
+            <ul>
+              {% for cit in citazioni %}
+                <li>
+                  {{ cit.fonte.autore }}, <em>{{ cit.fonte.titolo }}</em>{% if cit.fonte.luogo %}, {{ cit.fonte.luogo }}{% endif %}{% if cit.fonte.editore %}: {{ cit.fonte.editore }}{% endif %}{% if cit.fonte.anno %}, {{ cit.fonte.anno }}{% endif %}{% if cit.riferimento_pagine %}, p. {{ cit.riferimento_pagine }}{% endif %}
+                  {% if cit.riprodotto %}<em>(opera riprodotta)</em>{% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+{% endblock %}
