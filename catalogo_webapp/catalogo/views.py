@@ -38,7 +38,8 @@ def opera_detail(request, numero_archivio):
         Opera.objects.select_related("tipo_opera", "collezione").prefetch_related(
             "immagini",
             "bibliografia__fonte",
-            "operamostra_set__mostra__mostrasede_set__sede",
+            "operamostra_set__mostra_sede__mostra",
+            "operamostra_set__mostra_sede__sede",
         ),
         numero_archivio=numero_archivio,
         pubblicata=True,

@@ -2,14 +2,14 @@
 from django.core.management.base import BaseCommand
 
 from catalogo.models import (
-    Bibliografia,
     FonteBibliografica,
     Mostra,
     MostraSede,
     Opera,
     OperaMostra,
+    RiferimentoBibliografico,
     Sede,
-    TipoMostra,
+    TipoEsposizione,
     TipoOpera,
 )
 
@@ -25,7 +25,7 @@ class Command(BaseCommand):
             slug="opere-su-carta", defaults={"nome": "Opere su carta", "ordine": 2}
         )
 
-        personale, _ = TipoMostra.objects.get_or_create(nome="Mostra personale")
+        personale, _ = TipoEsposizione.objects.get_or_create(nome="Personale")
 
         opera1, _ = Opera.objects.update_or_create(
             numero_archivio="FDC-0001",
@@ -36,9 +36,9 @@ class Command(BaseCommand):
                 anno_inizio=1965,
                 anno_fine=1965,
                 tecnica="Olio su tela",
-                dimensioni_testo="cm 60 x 80",
-                altezza_cm=60,
-                larghezza_cm=80,
+                altezza=60,
+                larghezza=80,
+                unita_misura="cm",
                 pubblicata=True,
             ),
         )
@@ -51,7 +51,9 @@ class Command(BaseCommand):
                 anno_inizio=1972,
                 anno_fine=1972,
                 tecnica="Matita su carta",
-                dimensioni_testo="cm 21 x 29",
+                altezza=21,
+                larghezza=29,
+                unita_misura="cm",
                 pubblicata=True,
             ),
         )
@@ -59,17 +61,17 @@ class Command(BaseCommand):
         sede, _ = Sede.objects.get_or_create(nome="Galleria Comunale", citta="Pescara")
         mostra, _ = Mostra.objects.get_or_create(
             titolo="Francesco Di Cocco — Antologica",
-            defaults=dict(tipo_mostra=personale, anno_inizio=1980, anno_fine=1980),
+            defaults=dict(tipo_esposizione=personale, anno_testo="1980"),
         )
-        MostraSede.objects.get_or_create(mostra=mostra, sede=sede)
-        OperaMostra.objects.get_or_create(opera=opera1, mostra=mostra, defaults={"sala": "I"})
+        mostra_sede, _ = MostraSede.objects.get_or_create(mostra=mostra, sede=sede)
+        OperaMostra.objects.get_or_create(opera=opera1, mostra_sede=mostra_sede)
 
         fonte, _ = FonteBibliografica.objects.get_or_create(
             titolo="Francesco Di Cocco. Catalogo generale",
-            defaults=dict(autore="M. Rossi", editore="Edizioni Arte", luogo="Roma", anno="1999"),
+            defaults=dict(autore="M. Rossi", editore="Edizioni Arte", luogo="Roma", anno=1999),
         )
-        Bibliografia.objects.get_or_create(
-            opera=opera1, fonte=fonte, defaults={"riferimento_pagine": "45", "riprodotto": True}
+        RiferimentoBibliografico.objects.get_or_create(
+            opera=opera1, fonte=fonte, defaults={"pagina": "45", "numero_riproduzione": "12"}
         )
 
         self.stdout.write(self.style.SUCCESS("Demo data seeded."))

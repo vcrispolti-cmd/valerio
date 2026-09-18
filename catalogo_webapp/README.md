@@ -5,10 +5,13 @@ with exhibition and bibliography subforms, modeled on the structure of
 fondazionepaolini.it/ita/catalogo-ragionato.
 
 Scope: the catalog module only (works, exhibitions, bibliography, images) — not a full
-site with biography/news pages. See the app's `catalogo/models.py` docstring for why the
-schema deliberately diverges from the source Access database (Di_Cocco_Archivio.accdb):
-staging/parsing/audit tables that existed to work around Access's weak relational
-data-entry UX aren't ported, since Django admin's inline forms solve that directly.
+site with biography/news pages. See the app's `catalogo/models.py` docstring for the
+current mapping to the source Access database (Di_Cocco_Archivio.accdb) and which fields
+are website-only additions (`TipoOpera`, `Collezione`/`TipoCollezione`, `Opera.anno_inizio`/
+`anno_fine`) not yet present in Access. The source database was substantially restructured
+in September 2026 (Bibliografia → RiferimentiBibliografici with duplicated fields removed,
+OpereMostre now keys off a specific exhibition venue-stop via MostraSede, soft-delete
+tracking added) — these models reflect that current structure, not the original one.
 
 ## Running locally
 
@@ -40,10 +43,9 @@ pages aren't empty before real data is imported.
 
 ## Not done yet (next steps)
 
-1. **Data import** — a one-time script to migrate cleaned data out of
-   `Di_Cocco_Archivio.accdb` into these models (per the earlier redundancy-cleanup
-   checklist: don't port `Z_TMP_GalleriaImmagini`, the duplicate `Dimensioni_Originale`
-   column, or the superseded `Z_TMP_Esposizioni_Parse*` tables).
+1. **Data import** — a one-time script to migrate data out of `Di_Cocco_Archivio.accdb`
+   into these models. `T_F06_RisultatiRicerca` (an Access-internal cached search-results
+   table) should not be imported — it's UI plumbing for Access, not catalog data.
 2. **Production settings** — `SECRET_KEY` from an environment variable, `DEBUG=False`,
    real `ALLOWED_HOSTS`, Postgres instead of SQLite, `gunicorn`/`whitenoise` added to
    requirements.

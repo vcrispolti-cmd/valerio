@@ -28,7 +28,7 @@
 
       <dl class="scheda">
         {% if opera.tecnica %}<div><dt>Tecnica</dt><dd>{{ opera.tecnica }}</dd></div>{% endif %}
-        {% if opera.dimensioni_testo %}<div><dt>Dimensioni</dt><dd>{{ opera.dimensioni_testo }}</dd></div>{% endif %}
+        {% if opera.dimensioni_display %}<div><dt>Dimensioni</dt><dd>{{ opera.dimensioni_display }}</dd></div>{% endif %}
         {% if opera.collezione %}<div><dt>Collezione</dt><dd>{{ opera.collezione.nome }}</dd></div>{% endif %}
         {% if opera.provenienza %}<div><dt>Provenienza</dt><dd>{{ opera.provenienza }}</dd></div>{% endif %}
       </dl>
@@ -40,11 +40,11 @@
         </details>
       {% endif %}
 
-      {% if opera.segni_recto or opera.segni_verso %}
+      {% if opera.firma or opera.iscrizioni %}
         <details class="panel">
-          <summary>Segni e iscrizioni</summary>
-          {% if opera.segni_recto %}<p><strong>Recto:</strong> {{ opera.segni_recto }}</p>{% endif %}
-          {% if opera.segni_verso %}<p><strong>Verso:</strong> {{ opera.segni_verso }}</p>{% endif %}
+          <summary>Firma e iscrizioni</summary>
+          {% if opera.firma %}<p><strong>Firma:</strong> {{ opera.firma }}</p>{% endif %}
+          {% if opera.iscrizioni %}<p><strong>Iscrizioni:</strong> {{ opera.iscrizioni }}</p>{% endif %}
         </details>
       {% endif %}
 
@@ -55,11 +55,9 @@
             <ul>
               {% for om in esposizioni %}
                 <li>
-                  <strong>{{ om.mostra.titolo }}</strong>, {{ om.mostra.anno_inizio }}{% if om.mostra.anno_fine and om.mostra.anno_fine != om.mostra.anno_inizio %}–{{ om.mostra.anno_fine }}{% endif %}
-                  {% for ms in om.mostra.mostrasede_set.all %}
-                    — {{ ms.sede.nome }}{% if ms.sede.citta %}, {{ ms.sede.citta }}{% endif %}
-                  {% endfor %}
-                  {% if om.sala %}(sala {{ om.sala }}){% endif %}
+                  <strong>{{ om.mostra_sede.mostra.titolo }}</strong>{% if om.mostra_sede.mostra.anno_testo %}, {{ om.mostra_sede.mostra.anno_testo }}{% endif %}
+                  — {{ om.mostra_sede.sede.nome }}{% if om.mostra_sede.sede.citta %}, {{ om.mostra_sede.sede.citta }}{% endif %}
+                  {% if om.numero_catalogo %}(n. cat. {{ om.numero_catalogo }}){% endif %}
                 </li>
               {% endfor %}
             </ul>
@@ -74,8 +72,8 @@
             <ul>
               {% for cit in citazioni %}
                 <li>
-                  {{ cit.fonte.autore }}, <em>{{ cit.fonte.titolo }}</em>{% if cit.fonte.luogo %}, {{ cit.fonte.luogo }}{% endif %}{% if cit.fonte.editore %}: {{ cit.fonte.editore }}{% endif %}{% if cit.fonte.anno %}, {{ cit.fonte.anno }}{% endif %}{% if cit.riferimento_pagine %}, p. {{ cit.riferimento_pagine }}{% endif %}
-                  {% if cit.riprodotto %}<em>(opera riprodotta)</em>{% endif %}
+                  {{ cit.fonte.autore }}, <em>{{ cit.fonte.titolo }}</em>{% if cit.fonte.luogo %}, {{ cit.fonte.luogo }}{% endif %}{% if cit.fonte.editore %}: {{ cit.fonte.editore }}{% endif %}{% if cit.fonte.anno %}, {{ cit.fonte.anno }}{% endif %}{% if cit.pagina %}, p. {{ cit.pagina }}{% endif %}
+                  {% if cit.numero_riproduzione %}<em>(riprodotto, n. {{ cit.numero_riproduzione }})</em>{% endif %}
                 </li>
               {% endfor %}
             </ul>
