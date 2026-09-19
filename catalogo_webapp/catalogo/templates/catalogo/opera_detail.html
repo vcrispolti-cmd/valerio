@@ -1,6 +1,14 @@
 {% extends "catalogo/base.html" %}
 {% block title %}{{ opera.titolo }} — Catalogo Ragionato{% endblock %}
 {% block content %}
+  <div class="breadcrumb">
+    {% if opera.tipo_opera %}
+      <a href="{% url 'catalogo:browse' opera.tipo_opera.slug %}">&larr; {{ opera.tipo_opera.nome }}</a>
+    {% else %}
+      <a href="{% url 'catalogo:browse_all' %}">&larr; Catalogo</a>
+    {% endif %}
+  </div>
+
   <div class="opera-detail">
     <div class="opera-images">
       <div class="main-image">
@@ -82,4 +90,17 @@
       {% endwith %}
     </div>
   </div>
+
+  {% if prev_opera or next_opera %}
+    <nav class="opera-siblings">
+      {% if prev_opera %}
+        <a class="prev" href="{% url 'catalogo:detail' prev_opera.numero_archivio %}">&larr; {{ prev_opera.titolo }}</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+      {% if next_opera %}
+        <a class="next" href="{% url 'catalogo:detail' next_opera.numero_archivio %}">{{ next_opera.titolo }} &rarr;</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 {% endblock %}

@@ -170,6 +170,37 @@ details.panel[open] summary { color: var(--ink); }
 details.panel ul { margin: 0.75rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; }
 details.panel li { margin-bottom: 0.5rem; }
 
+.breadcrumb { margin-bottom: 1.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.breadcrumb a { text-decoration: none; color: var(--muted); }
+.breadcrumb a:hover { color: var(--ink); }
+
+.opera-siblings {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+.opera-siblings a { text-decoration: none; color: var(--muted); max-width: 45%; }
+.opera-siblings a:hover { color: var(--ink); }
+.opera-siblings .next { text-align: right; margin-left: auto; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+.pagination a { text-decoration: none; color: var(--ink); }
+.pagination a:hover { text-decoration: underline; }
+.pagination .pages { color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.75rem; }
+
 footer.site {
   border-top: 1px solid var(--line);
   padding: 1.5rem 2rem;

@@ -1,5 +1,8 @@
+from datetime import date
+
 import django_filters
 from django import forms
+from django.db.models import Max, Min
 
 from .models import Opera
 
@@ -23,6 +26,22 @@ class OperaFilter(django_filters.FilterSet):
     class Meta:
         model = Opera
         fields = ["tipo_opera", "anno_da", "anno_a", "tecnica", "q"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Bound the year inputs to the years actually present, instead of letting the
+        # browser's number-input spinner start from 0/1 — set on every request since the
+        # real min/max shifts as new works get a year assigned.
+        years = Opera.objects.aggregate(min_anno=Min("anno_inizio"), max_anno=Max("anno_fine"))
+        year_min = years["min_anno"]
+        year_max = years["max_anno"] or date.today().year
+        if year_min is not None:
+            self.form.fields["anno_da"].widget.attrs.update({
+                "min": year_min, "max": year_max, "placeholder": f"es. {year_min}",
+            })
+            self.form.fields["anno_a"].widget.attrs.update({
+                "min": year_min, "max": year_max, "placeholder": f"es. {year_max}",
+            })
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(titolo__icontains=value)

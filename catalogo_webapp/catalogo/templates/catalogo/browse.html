@@ -50,4 +50,16 @@
       <p class="empty-state">Nessuna opera trovata con questi filtri.</p>
     {% endfor %}
   </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">&larr; Precedente</a>
+      {% endif %}
+      <span class="pages">Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Successiva &rarr;</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 {% endblock %}
