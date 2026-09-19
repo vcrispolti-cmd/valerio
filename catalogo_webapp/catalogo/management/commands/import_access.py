@@ -19,6 +19,13 @@ them. Two exceptions, deliberately: `Opera.tipo_opera` (category) and `Opera.pub
 decisions made on the website, and a re-run must not clobber them just because Access has no
 equivalent field to compare against.
 
+Images are never required to be present at import time. Every Immagine row with a Nome_File
+gets Immagine.file pointed at media/immagini/<Nome_File> by reference only (no bytes read, no
+existence check) — this is what makes the resulting database portable: it can be copied to any
+machine, and the site works as soon as the real image files are dropped (flat, original
+filenames) into that machine's media/immagini/ folder. --images-dir is only for physically
+copying files into media/opere/%Y/ when they're already sitting locally at import time.
+
 T_F06_RisultatiRicerca is not imported — see the note in models.py.
 
 Import order follows FK dependencies: lookups -> Sedi -> FontiBibliografiche -> Mostre ->
@@ -185,9 +192,12 @@ class Command(BaseCommand):
         parser.add_argument("--dry-run", action="store_true", help="Roll back at the end; nothing is saved.")
         parser.add_argument(
             "--images-dir", default=None,
-            help="Local folder mirroring Access's Percorso_Relativo — if given, matching image "
-                 "files are attached to Immagine.file. Without it, image rows are created with "
-                 "their original filename/path recorded but no file attached.",
+            help="Optional local folder mirroring Access's Percorso_Relativo. If a matching file "
+                 "is found there, it is physically copied into Immagine.file (media/opere/%%Y/). "
+                 "Every Immagine row with a Nome_File always gets a reference to "
+                 "media/immagini/<Nome_File> regardless of --images-dir, so the site works once "
+                 "someone drops the real files into that folder — no re-import needed, and the "
+                 "database itself never needs to carry the image bytes to be portable.",
         )
         parser.add_argument(
             "--only", default=None,
@@ -453,20 +463,36 @@ class Command(BaseCommand):
             )
             stats.bump("Immagini", "created" if created else "updated")
 
-            if images_dir and not obj.file:
+            if not obj.file:
                 self._attach_image_file(obj, images_dir, stats)
 
     def _attach_image_file(self, immagine, images_dir, stats):
         import os
 
-        candidates = [c for c in (immagine.percorso_relativo, immagine.nome_file) if c]
-        for rel in candidates:
-            candidate_path = os.path.join(images_dir, rel)
-            if os.path.isfile(candidate_path):
-                with open(candidate_path, "rb") as fh:
-                    immagine.file.save(os.path.basename(candidate_path), File(fh), save=True)
-                return
-        stats.warn(f"Immagini legacy_id={immagine.legacy_id}: nessun file trovato in --images-dir per '{immagine.percorso_relativo or immagine.nome_file}'")
+        basename = immagine.nome_file or (
+            os.path.basename(immagine.percorso_relativo.replace("\\", "/"))
+            if immagine.percorso_relativo else ""
+        )
+        if not basename:
+            stats.warn(f"Immagini legacy_id={immagine.legacy_id}: né Nome_File né Percorso_Relativo valorizzati, nessun riferimento immagine creato")
+            return
+
+        if images_dir:
+            candidates = [c for c in (immagine.percorso_relativo, immagine.nome_file) if c]
+            for rel in candidates:
+                candidate_path = os.path.join(images_dir, rel)
+                if os.path.isfile(candidate_path):
+                    with open(candidate_path, "rb") as fh:
+                        immagine.file.save(basename, File(fh), save=True)
+                    return
+
+        # Reference-only, no bytes required: points at media/immagini/<basename> without
+        # copying or even checking it exists yet. This is what makes the database portable —
+        # ship it (or the whole project) without any image files, then drop the real files into
+        # media/immagini/ on whatever machine runs the site (matched by original filename) and
+        # every reference resolves with no re-import.
+        immagine.file.name = f"immagini/{basename}"
+        immagine.save(update_fields=["file"])
 
     # ------------------------------------------------------------------
     def import_mostre_sedi(self, accdb_path, stats):
