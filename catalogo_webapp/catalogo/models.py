@@ -21,7 +21,19 @@ the Django site has its own filtering (see filters.py).
 from django.db import models
 
 
-class OrderedLookup(models.Model):
+class LegacyIdMixin(models.Model):
+    """Carries the original Access primary key, so the import script can safely re-run
+    (update_or_create keyed on legacy_id) instead of duplicating rows on every run.
+    Null for records that only ever exist on the website side (the Tipo*/Collezione
+    website-only additions)."""
+
+    legacy_id = models.IntegerField(unique=True, null=True, blank=True, db_index=True)
+
+    class Meta:
+        abstract = True
+
+
+class OrderedLookup(LegacyIdMixin, models.Model):
     """Base for small controlled-vocabulary tables (mirrors the Tipo_* tables in Access)."""
 
     nome = models.CharField(max_length=255, unique=True)
@@ -47,7 +59,7 @@ class TipoOpera(OrderedLookup):
         verbose_name_plural = "Tipi opera (sezioni del catalogo) — solo sito"
 
 
-class TipoEsposizione(models.Model):
+class TipoEsposizione(LegacyIdMixin, models.Model):
     """Mirrors Access's Tipo_Esposizione (only 3 values: Personale/Collettiva/Da verificare)."""
 
     nome = models.CharField("Tipo esposizione", max_length=100, unique=True)
@@ -115,7 +127,7 @@ class Collezione(models.Model):
         return self.nome
 
 
-class Sede(models.Model):
+class Sede(LegacyIdMixin, models.Model):
     nome = models.CharField("Nome sede", max_length=255)
     istituzione = models.CharField(max_length=255, blank=True)
     citta = models.CharField(max_length=255, blank=True)
@@ -134,7 +146,7 @@ class Sede(models.Model):
         return f"{self.nome} ({self.citta})" if self.citta else self.nome
 
 
-class Mostra(models.Model):
+class Mostra(LegacyIdMixin, models.Model):
     """A named exhibition (may span multiple venues via MostraSede)."""
 
     titolo = models.CharField("Titolo mostra", max_length=500)
@@ -157,7 +169,7 @@ class Mostra(models.Model):
         return f"{self.titolo} ({self.anno_testo})" if self.anno_testo else self.titolo
 
 
-class MostraSede(models.Model):
+class MostraSede(LegacyIdMixin, models.Model):
     """Join table: one venue-stop of an exhibition. OperaMostra links to this, not to Mostra
     directly, so the catalog can record exactly which stop of a touring show a work appeared in."""
 
@@ -177,7 +189,7 @@ class MostraSede(models.Model):
         return f"{self.mostra} @ {self.sede}"
 
 
-class FonteBibliografica(models.Model):
+class FonteBibliografica(LegacyIdMixin, models.Model):
     """A publication/source — the single source of truth for author/title/publisher data."""
 
     tipo_fonte = models.CharField(max_length=100, blank=True)
@@ -208,7 +220,7 @@ class FonteBibliografica(models.Model):
         return f"{self.autore or self.editore} — {self.titolo}{anno}"
 
 
-class Opera(models.Model):
+class Opera(LegacyIdMixin, models.Model):
     """A single work — the core catalog record."""
 
     numero_scheda = models.CharField(max_length=100, blank=True)
@@ -268,6 +280,16 @@ class Opera(models.Model):
         return f"{self.numero_archivio} — {self.titolo}"
 
     @property
+    def immagini_con_file(self):
+        """Images that actually have a file attached — many imported Immagine rows don't yet
+        (the Access file only records the original filename/path, not the file itself)."""
+        return self.immagini.exclude(file="")
+
+    @property
+    def immagine_principale(self):
+        return self.immagini_con_file.first()
+
+    @property
     def dimensioni_display(self):
         parts = [v for v in (self.altezza, self.larghezza, self.profondita) if v]
         if not parts:
@@ -277,10 +299,14 @@ class Opera(models.Model):
         return f"{unit} {dims}"
 
 
-class Immagine(models.Model):
+class Immagine(LegacyIdMixin, models.Model):
     opera = models.ForeignKey(Opera, on_delete=models.CASCADE, related_name="immagini")
     tipo_immagine = models.ForeignKey(TipoImmagine, on_delete=models.PROTECT, null=True, blank=True)
-    file = models.ImageField(upload_to="opere/%Y/")
+    file = models.ImageField(
+        upload_to="opere/%Y/", blank=True,
+        help_text="La cartella immagini di Access non è dentro il file .accdb — questo campo "
+        "resta vuoto finché il file corrispondente non viene individuato e collegato.",
+    )
     nome_file = models.CharField(max_length=255, blank=True, help_text="Nome file originale (riferimento di importazione).")
     percorso_relativo = models.CharField(max_length=255, blank=True, help_text="Percorso originale in Access (riferimento di importazione).")
     segni_particolari = models.TextField(blank=True)
@@ -303,7 +329,7 @@ class Immagine(models.Model):
         return f"Immagine {self.ordine_visualizzazione} — {self.opera.numero_archivio}"
 
 
-class OperaMostra(models.Model):
+class OperaMostra(LegacyIdMixin, models.Model):
     """Join table: which works were shown at which exhibition venue-stop."""
 
     opera = models.ForeignKey(Opera, on_delete=models.CASCADE)
@@ -324,13 +350,14 @@ class OperaMostra(models.Model):
         ordering = ["mostra_sede"]
         verbose_name = "Opera in mostra"
         verbose_name_plural = "Opere in mostra"
-        unique_together = ("opera", "mostra_sede")
+        # No unique_together on (opera, mostra_sede) — the real data has a couple of
+        # legitimate cases of the same work appearing twice at one venue-stop.
 
     def __str__(self):
         return f"{self.opera.numero_archivio} @ {self.mostra_sede}"
 
 
-class RiferimentoBibliografico(models.Model):
+class RiferimentoBibliografico(LegacyIdMixin, models.Model):
     """Work-specific citation (Access: RiferimentiBibliografici). Author/title/publisher data
     lives only on FonteBibliografica — this table deliberately does not repeat it."""
 
@@ -355,7 +382,9 @@ class RiferimentoBibliografico(models.Model):
         ordering = ["fonte"]
         verbose_name = "Riferimento bibliografico"
         verbose_name_plural = "Riferimenti bibliografici"
-        unique_together = ("opera", "fonte")
+        # No unique_together on (opera, fonte) — the real data legitimately cites the same
+        # source multiple times for the same work (different pages/plates): 93 of 254
+        # distinct (opera, fonte) pairs have more than one citation row.
 
     def __str__(self):
         return f"{self.opera.numero_archivio} — {self.fonte}"

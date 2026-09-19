@@ -41,13 +41,39 @@ pages aren't empty before real data is imported.
   filterable browse grid, work detail page
 - `catalogo/templates/catalogo/` — templates (minimal gallery-style layout)
 
+## Importing data from Access
+
+```bash
+python manage.py import_access /path/to/Di_Cocco_Archivio.accdb --dry-run   # preview, nothing saved
+python manage.py import_access /path/to/Di_Cocco_Archivio.accdb            # commit
+```
+
+Requires `mdb-export` on PATH (`apt-get install mdbtools` / `brew install mdbtools`) — that's
+the only thing that talks to the `.accdb` file directly.
+
+Safe to re-run as often as you like as Access data keeps changing: every row carries the
+original Access ID (`legacy_id`) and gets upserted, not re-inserted. Two exceptions on
+purpose — `Opera.tipo_opera` (category) and `Opera.pubblicata` are only set the first time a
+work is created, so re-importing never undoes categorization or publishing done from the
+website admin. Newly-imported works default to a "Da classificare" category and
+`pubblicata=False` until reviewed.
+
+Real image files aren't inside the `.accdb` (Access only stores the original filename/path)
+— pass `--images-dir /path/to/images` to attach files found there, matched against the
+recorded path/filename; otherwise `Immagine` rows are created without a file and picked up
+by a later pass.
+
+Full details and the field-by-field mapping are in
+`catalogo/management/commands/import_access.py`.
+
 ## Not done yet (next steps)
 
-1. **Data import** — a one-time script to migrate data out of `Di_Cocco_Archivio.accdb`
-   into these models. `T_F06_RisultatiRicerca` (an Access-internal cached search-results
-   table) should not be imported — it's UI plumbing for Access, not catalog data.
-2. **Production settings** — `SECRET_KEY` from an environment variable, `DEBUG=False`,
+1. **Curatorial review** — every imported work starts as "Da classificare" and unpublished;
+   assigning real categories and flipping `pubblicata` is a manual pass in the admin (or a
+   follow-up script if there's a reliable rule to derive category from existing fields).
+2. **Attaching real image files** — via `--images-dir` once the image folder is available.
+3. **Production settings** — `SECRET_KEY` from an environment variable, `DEBUG=False`,
    real `ALLOWED_HOSTS`, Postgres instead of SQLite, `gunicorn`/`whitenoise` added to
    requirements.
-3. **Deployment** — Dockerfile + docker-compose (Nginx + Gunicorn + Postgres) for the
+4. **Deployment** — Dockerfile + docker-compose (Nginx + Gunicorn + Postgres) for the
    Aruba Cloud VPS (or equivalent), plus Certbot for HTTPS.

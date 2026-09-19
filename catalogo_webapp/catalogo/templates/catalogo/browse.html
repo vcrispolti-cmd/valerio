@@ -33,9 +33,9 @@
     {% for opera in opere %}
       <a class="opera-card" href="{% url 'catalogo:detail' opera.numero_archivio %}">
         <div class="thumb">
-          {% with img=opera.immagini.first %}
+          {% with img=opera.immagine_principale %}
             {% if img %}
-              <img src="{{ img.file.url }}" alt="{{ img.didascalia|default:opera.titolo }}">
+              <img src="{{ img.file.url }}" alt="{{ img.descrizione|default:opera.titolo }}">
             {% else %}
               <span class="placeholder">Nessuna immagine</span>
             {% endif %}

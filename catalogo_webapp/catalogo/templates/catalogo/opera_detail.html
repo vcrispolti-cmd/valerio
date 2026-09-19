@@ -4,18 +4,18 @@
   <div class="opera-detail">
     <div class="opera-images">
       <div class="main-image">
-        {% with img=opera.immagini.first %}
+        {% with img=opera.immagine_principale %}
           {% if img %}
-            <img src="{{ img.file.url }}" alt="{{ img.didascalia|default:opera.titolo }}">
+            <img src="{{ img.file.url }}" alt="{{ img.descrizione|default:opera.titolo }}">
           {% else %}
             <span class="placeholder">Nessuna immagine</span>
           {% endif %}
         {% endwith %}
       </div>
-      {% if opera.immagini.count > 1 %}
+      {% if opera.immagini_con_file.count > 1 %}
         <div class="thumbs">
-          {% for img in opera.immagini.all %}
-            <img src="{{ img.file.url }}" alt="{{ img.didascalia }}">
+          {% for img in opera.immagini_con_file %}
+            <img src="{{ img.file.url }}" alt="{{ img.descrizione }}">
           {% endfor %}
         </div>
       {% endif %}
