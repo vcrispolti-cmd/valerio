@@ -12,7 +12,11 @@ def catalogo_landing(request):
 
 def opera_browse(request, sezione_slug=None):
     """Browse/grid view, filterable, optionally scoped to one section."""
-    queryset = Opera.objects.filter(pubblicata=True).select_related("tipo_opera")
+    queryset = (
+        Opera.objects.filter(pubblicata=True, immagini__file__gt="")
+        .select_related("tipo_opera")
+        .distinct()
+    )
 
     sezione = None
     if sezione_slug:

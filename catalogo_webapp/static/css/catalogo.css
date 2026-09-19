@@ -4,6 +4,8 @@
   --line: #e2e2e2;
   --bg: #fdfdfc;
   --accent: #8a1f11;
+  --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  --sans: "Helvetica Neue", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -12,7 +14,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 15px;
   line-height: 1.5;
 }
@@ -30,9 +32,10 @@ header.site {
 }
 
 header.site .title {
-  font-size: 1.1rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+  text-transform: none;
   text-decoration: none;
   font-weight: 600;
 }
@@ -67,7 +70,14 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
   transition: border-color 0.15s ease;
 }
 .sezione-card:hover { border-color: var(--ink); }
-.sezione-card h2 { margin: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.sezione-card h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
 
 .filters {
   display: flex;
@@ -118,6 +128,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 .opera-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .opera-card .thumb .placeholder { color: var(--muted); font-size: 0.75rem; }
 .opera-card .meta { font-size: 0.82rem; }
+.opera-card .meta .titolo { font-family: var(--serif); font-size: 0.95rem; }
 .opera-card .meta .anno { color: var(--muted); }
 
 .empty-state { color: var(--muted); padding: 3rem 0; text-align: center; }
@@ -136,8 +147,8 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 .opera-images .thumbs img { width: 64px; height: 64px; object-fit: cover; border: 1px solid var(--line); }
 
 .opera-info .archivio { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
-.opera-info h1 { font-size: 1.4rem; font-weight: 500; margin: 0 0 0.3rem; }
-.opera-info .anno { color: var(--muted); margin-bottom: 1.25rem; }
+.opera-info h1 { font-family: var(--serif); font-size: 1.75rem; font-weight: 500; margin: 0 0 0.3rem; }
+.opera-info .anno { color: var(--muted); margin-bottom: 1.25rem; font-style: italic; }
 
 dl.scheda { margin: 0 0 1.5rem; }
 dl.scheda div { display: flex; padding: 0.35rem 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
