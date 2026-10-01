@@ -1,0 +1,199 @@
+{
+  "claims": [
+    {
+      "claim_id": "C001",
+      "text": "Arrears fell from 4.1 percent of GDP at end-2023 to 2.6 percent of GDP at end-2025.",
+      "claim_type": "DAT",
+      "importance": "CRITICAL",
+      "author": "gemini",
+      "approved_wording": "Energy-sector arrears fell from 4.1 percent of GDP at end-2023 to 2.6 percent of GDP at end-2025.",
+      "evidence": [
+        {
+          "source_id": "S001",
+          "excerpt": "Arrears of the state-owned distribution company fell from 4.1 percent of GDP at end-2023 to 2.6 percent of GDP at end-2025.",
+          "locator": "Section 2"
+        }
+      ],
+      "numbers": [
+        {
+          "value": 4.1,
+          "unit": "percent of GDP",
+          "series": "ARREARS_GDP",
+          "country": "CTRY_A",
+          "period": "2023",
+          "connector": "local_csv"
+        },
+        {
+          "value": 2.6,
+          "unit": "percent of GDP",
+          "series": "ARREARS_GDP",
+          "country": "CTRY_A",
+          "period": "2025",
+          "connector": "local_csv"
+        }
+      ]
+    },
+    {
+      "claim_id": "C002",
+      "text": "Collection rates rose from 78 percent in 2023 to 86 percent in 2025.",
+      "claim_type": "DAT",
+      "importance": "MATERIAL",
+      "author": "gemini",
+      "approved_wording": "Collection rates rose from 78 percent in 2023 to 86 percent in 2025.",
+      "evidence": [
+        {
+          "source_id": "S001",
+          "excerpt": "Collection rates rose from 78 percent in 2023 to 86 percent in 2025.",
+          "locator": "Section 2"
+        }
+      ],
+      "numbers": [
+        {
+          "value": 86,
+          "unit": "percent",
+          "series": "COLLECTION_RATE",
+          "country": "CTRY_A",
+          "period": "2025"
+        }
+      ]
+    },
+    {
+      "claim_id": "C003",
+      "text": "The cash waterfall mechanism was introduced in March 2024.",
+      "claim_type": "FCT",
+      "importance": "MATERIAL",
+      "author": "gemini",
+      "approved_wording": "The cash waterfall mechanism was introduced in March 2024.",
+      "evidence": [
+        {
+          "source_id": "S001",
+          "excerpt": "The cash waterfall mechanism, introduced in March 2024, allocates sector revenues according to a pre-agreed priority ordering.",
+          "locator": "Section 3"
+        }
+      ]
+    },
+    {
+      "claim_id": "C004",
+      "text": "In 2025, the Treasury cleared arrears equivalent to 0.9 percent of GDP through a securitization operation.",
+      "claim_type": "FCT",
+      "importance": "MATERIAL",
+      "author": "gemini",
+      "approved_wording": "In 2025, the Treasury cleared arrears equivalent to 0.9 percent of GDP through a securitization operation.",
+      "evidence": [
+        {
+          "source_id": "S001",
+          "excerpt": "Treasury cleared arrears equivalent to 0.9 percent of GDP in 2025 through a securitization operation.",
+          "locator": "Section 3"
+        }
+      ],
+      "numbers": [
+        {
+          "value": 0.9,
+          "unit": "percent of GDP",
+          "series": "ARREARS_CLEARANCE_GDP",
+          "country": "CTRY_A",
+          "period": "2025"
+        }
+      ]
+    },
+    {
+      "claim_id": "C005",
+      "text": "The cash waterfall drove the reduction in arrears.",
+      "claim_type": "CAU",
+      "importance": "CRITICAL",
+      "author": "deepseek",
+      "approved_wording": "The cash waterfall appears to have contributed to the reduction in arrears, alongside higher collections and the 2025 arrears clearance.",
+      "evidence": [
+        {
+          "source_id": "S002",
+          "excerpt": "The decline in arrears coincided with the introduction of the cash waterfall and with higher collections. The available data do not allow the contribution of each factor to be separated.",
+          "locator": "p. 1"
+        }
+      ]
+    },
+    {
+      "claim_id": "C006",
+      "text": "Average end-user tariffs remained about 20 percent below the cost-recovery level in 2025.",
+      "claim_type": "DAT",
+      "importance": "MATERIAL",
+      "author": "gemini",
+      "approved_wording": "Average end-user tariffs remained about 20 percent below the cost-recovery level in 2025.",
+      "evidence": [
+        {
+          "source_id": "S002",
+          "excerpt": "Average end-user tariffs remained about 20 percent below the cost-recovery level in 2025.",
+          "locator": "p. 1"
+        }
+      ]
+    },
+    {
+      "claim_id": "C007",
+      "text": "Staff recommends gradually moving tariffs toward cost-recovery levels, with targeted support for vulnerable households.",
+      "claim_type": "REC",
+      "importance": "MATERIAL",
+      "author": "claude",
+      "approved_wording": "Staff recommends gradually moving tariffs toward cost-recovery levels, with targeted support for vulnerable households.",
+      "depends_on": [
+        "C006"
+      ],
+      "recommendation_chain": {
+        "diagnosis": "Tariffs below cost recovery (C006)",
+        "mechanism": "Revenue shortfall feeds arrears",
+        "objective": "Financial viability",
+        "instrument": "Tariff path",
+        "implementation": "Regulator, multi-year",
+        "tradeoff": "Affordability, protected by targeted support"
+      }
+    },
+    {
+      "claim_id": "C008",
+      "text": "Arrears could re-emerge if collection gains are not sustained.",
+      "claim_type": "RSK",
+      "importance": "MATERIAL",
+      "author": "claude",
+      "approved_wording": "Arrears could re-emerge if collection gains are not sustained.",
+      "depends_on": [
+        "C002"
+      ]
+    },
+    {
+      "claim_id": "C009",
+      "text": "Tariff shortfalls accounted for roughly half of sector losses in 2025.",
+      "claim_type": "DAT",
+      "importance": "MATERIAL",
+      "author": "gemini",
+      "approved_wording": "Tariff shortfalls accounted for roughly half of sector losses in 2025.",
+      "evidence": [
+        {
+          "source_id": "S003",
+          "excerpt": "Tariff shortfalls accounted for roughly half of sector losses in 2025.",
+          "locator": "p. 1"
+        }
+      ]
+    },
+    {
+      "claim_id": "C010",
+      "text": "The regional review found that the cash waterfall eliminated arrears to independent power producers.",
+      "claim_type": "FCT",
+      "importance": "MATERIAL",
+      "author": "deepseek",
+      "approved_wording": "The regional review found that the cash waterfall eliminated arrears to independent power producers.",
+      "evidence": [
+        {
+          "source_id": "S002",
+          "excerpt": "The cash waterfall eliminated arrears to independent power producers.",
+          "locator": "p. 2"
+        }
+      ]
+    }
+  ],
+  "merged": [],
+  "conflicts_preserved": [
+    {
+      "claim_ids": [
+        "C005"
+      ],
+      "note": "Analyst proposed 'drove'; evidence supports only coincidence + plausible mechanism."
+    }
+  ]
+}

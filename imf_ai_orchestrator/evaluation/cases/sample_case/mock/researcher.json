@@ -1,0 +1,109 @@
+{
+  "default": {
+    "sources": [
+      {
+        "source_id": "R1",
+        "title": "Energy Sector Recovery Report 2025 (SYNTHETIC)",
+        "institution": "Ministry of Finance of Country A",
+        "publication_date": "2025-11-15",
+        "data_vintage": "MoF 2025-11",
+        "local_path": "sources/mof_energy_recovery_2025.txt",
+        "authority_grade": "S5"
+      },
+      {
+        "source_id": "R2",
+        "title": "Energy Sector Review: Country A (SYNTHETIC)",
+        "institution": "Regional Development Institution",
+        "publication_date": "2025-06-30",
+        "local_path": "sources/regional_energy_review_2025.txt",
+        "authority_grade": "S4"
+      },
+      {
+        "source_id": "R3",
+        "title": "Energy Losses in Country A (SYNTHETIC working paper)",
+        "institution": "University working paper",
+        "publication_date": "2022-03-01",
+        "local_path": "sources/working_paper_2022.txt",
+        "authority_grade": "S3"
+      }
+    ],
+    "candidate_claims": [
+      {
+        "text": "Arrears fell from 4.1 percent of GDP at end-2023 to 2.6 percent of GDP at end-2025.",
+        "claim_type": "DAT",
+        "importance": "CRITICAL",
+        "evidence": [
+          {
+            "source_id": "R1",
+            "excerpt": "Arrears of the state-owned distribution company fell from 4.1 percent of GDP at end-2023 to 2.6 percent of GDP at end-2025.",
+            "locator": "Section 2"
+          }
+        ]
+      },
+      {
+        "text": "Tariff shortfalls accounted for roughly half of sector losses in 2025.",
+        "claim_type": "DAT",
+        "importance": "MATERIAL",
+        "evidence": [
+          {
+            "source_id": "R3",
+            "excerpt": "Tariff shortfalls accounted for roughly half of sector losses in 2025.",
+            "locator": "p. 1"
+          }
+        ]
+      },
+      {
+        "text": "Collection rates rose from 78 percent in 2023 to 86 percent in 2025.",
+        "claim_type": "DAT",
+        "importance": "MATERIAL",
+        "evidence": [
+          {
+            "source_id": "R1",
+            "excerpt": "Collection rates rose from 78 percent in 2023 to 86 percent in 2025.",
+            "locator": "Section 2"
+          }
+        ]
+      },
+      {
+        "text": "The cash waterfall mechanism was introduced in March 2024.",
+        "claim_type": "FCT",
+        "importance": "MATERIAL",
+        "evidence": [
+          {
+            "source_id": "R1",
+            "excerpt": "The cash waterfall mechanism, introduced in March 2024, allocates sector revenues according to a pre-agreed priority ordering.",
+            "locator": "Section 3"
+          }
+        ]
+      },
+      {
+        "text": "In 2025, the Treasury cleared arrears equivalent to 0.9 percent of GDP through a securitization operation.",
+        "claim_type": "FCT",
+        "importance": "MATERIAL",
+        "evidence": [
+          {
+            "source_id": "R1",
+            "excerpt": "Treasury cleared arrears equivalent to 0.9 percent of GDP in 2025 through a securitization operation.",
+            "locator": "Section 3"
+          }
+        ]
+      },
+      {
+        "text": "Average end-user tariffs remained about 20 percent below the cost-recovery level in 2025.",
+        "claim_type": "DAT",
+        "importance": "MATERIAL",
+        "evidence": [
+          {
+            "source_id": "R2",
+            "excerpt": "Average end-user tariffs remained about 20 percent below the cost-recovery level in 2025.",
+            "locator": "p. 1"
+          }
+        ]
+      }
+    ],
+    "contradictions": [],
+    "research_gaps": [
+      "No breakdown of arrears by creditor was found."
+    ]
+  }
+}

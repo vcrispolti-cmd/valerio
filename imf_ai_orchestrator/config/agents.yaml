@@ -1,0 +1,63 @@
+version: "1.1"
+# Each agent is a model endpoint. `family` is the training lineage used for
+# independence constraints: two agents of the same family are NOT treated as
+# independent checks of each other (e.g. ChatGPT and Microsoft Copilot).
+#
+# `model` must be set to an institutionally approved model identifier before
+# live use. Adapters:
+#   openai_compatible  - OpenAI-style /chat/completions (OpenAI, DeepSeek, Perplexity)
+#   anthropic          - Anthropic Messages API
+#   gemini             - Google Generative Language API
+#   manual             - writes the prompt to disk; you paste it into the
+#                        chatbot and save the reply (no API needed)
+# The run mode (--mode mock|manual|live) decides whether these adapters are used.
+agents:
+  chatgpt:
+    family: openai
+    provider: openai
+    adapter: openai_compatible
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    model: SET_ME
+    temperature: 0.2
+  gemini:
+    family: google
+    provider: google
+    adapter: gemini
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    api_key_env: GEMINI_API_KEY
+    model: SET_ME
+    temperature: 0.2
+  deepseek:
+    family: deepseek
+    provider: deepseek
+    adapter: openai_compatible
+    base_url: https://api.deepseek.com
+    api_key_env: DEEPSEEK_API_KEY
+    model: SET_ME
+    temperature: 0.2
+  claude:
+    family: anthropic
+    provider: anthropic
+    adapter: anthropic
+    base_url: https://api.anthropic.com/v1
+    api_key_env: ANTHROPIC_API_KEY
+    model: SET_ME
+    temperature: 0.2
+  perplexity:
+    # Perplexity's answer engine can run on models from several labs; treat it
+    # as its own family but never as proof of independence on its own.
+    family: perplexity
+    provider: perplexity
+    adapter: openai_compatible
+    base_url: https://api.perplexity.ai
+    api_key_env: PERPLEXITY_API_KEY
+    model: SET_ME
+    temperature: 0.0
+  copilot:
+    # Microsoft Copilot runs largely on OpenAI models: same family as ChatGPT.
+    # There is no general-purpose API for this pipeline, so it is manual-only.
+    family: openai
+    provider: microsoft
+    adapter: manual
+    model: n/a

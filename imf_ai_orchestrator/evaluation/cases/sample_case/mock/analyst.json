@@ -1,0 +1,67 @@
+{
+  "deepseek": {
+    "diagnosis": "Several factors moved together; attribution is not identified.",
+    "mechanisms": [
+      {
+        "mechanism": "Waterfall improves payment discipline",
+        "evidence_needed": "Flow arrears before/after"
+      }
+    ],
+    "rival_explanations": [
+      {
+        "explanation": "One-off clearance",
+        "evidence_for": "0.9% of GDP securitization",
+        "evidence_against": "",
+        "distinguishing_test": "Stock vs flow"
+      }
+    ],
+    "candidate_claims": [
+      {
+        "text": "The cash waterfall drove the reduction in arrears.",
+        "claim_type": "CAU",
+        "importance": "CRITICAL",
+        "evidence": []
+      },
+      {
+        "text": "The regional review found that the cash waterfall eliminated arrears to independent power producers.",
+        "claim_type": "FCT",
+        "importance": "MATERIAL",
+        "evidence": []
+      }
+    ],
+    "weakest_links": [
+      "No flow data"
+    ],
+    "falsification_tests": [
+      "Flow arrears after March 2024"
+    ]
+  },
+  "default": {
+    "diagnosis": "Decline reflects a mix of collections, clearance and the waterfall.",
+    "mechanisms": [],
+    "rival_explanations": [
+      {
+        "explanation": "Higher collections",
+        "evidence_for": "78 to 86 percent",
+        "evidence_against": "",
+        "distinguishing_test": ""
+      }
+    ],
+    "candidate_claims": [
+      {
+        "text": "Arrears could re-emerge if collection gains are not sustained.",
+        "claim_type": "RSK",
+        "importance": "MATERIAL",
+        "evidence": []
+      },
+      {
+        "text": "Staff recommends gradually moving tariffs toward cost-recovery levels, with targeted support for vulnerable households.",
+        "claim_type": "REC",
+        "importance": "MATERIAL",
+        "evidence": []
+      }
+    ],
+    "weakest_links": [],
+    "falsification_tests": []
+  }
+}

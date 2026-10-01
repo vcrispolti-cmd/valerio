@@ -1,0 +1,38 @@
+version: "1.1"
+claim_types:
+  FCT: factual
+  DAT: data_numerical
+  DEF: definition_institutional
+  POL: policy_action
+  REL: relationship
+  CAU: causal
+  INT: interpretation
+  FOR: forecast_projection
+  RSK: risk
+  CMP: comparative
+  REC: recommendation
+  QUO: attributed_statement
+  UNR: unresolved
+importance: [CRITICAL, MATERIAL, SUPPORTING, MINOR]
+source_authority:
+  S5: "Primary authoritative (IMF Board papers/data, ministry, central bank, statistics office, legislation)"
+  S4: "High-quality institutional (World Bank, BIS, OECD, UN agencies, regional institutions)"
+  S3: "High-quality independent (peer-reviewed research, established research institutions)"
+  S2: "Secondary reliable (reputable financial press, think tanks, professional databases)"
+  S1: "Weak / tertiary (blogs, aggregators, unsourced pages)"
+  S0: "Unusable (unverifiable, anonymous, inaccessible, fabricated)"
+evidence_support:
+  E5: "Directly establishes the claim; definitions, timing and population match"
+  E4: "Strongly supports with minimal inference"
+  E3: "Supports with reasonable interpretation"
+  E2: "Weak / partial support"
+  E1: "Speculative"
+  E0: "No support"
+causal_strength:
+  C5: "Strong identification (natural experiment, RCT, robust quasi-experimental)"
+  C4: "Strong quasi-causal (multiple strategies or compelling mechanism + evidence)"
+  C3: "Credible mechanism + supporting evidence, identification limits remain"
+  C2: "Correlation + plausible mechanism"
+  C1: "Narrative inference (timing, plausibility)"
+  C0: "Unsupported causal assertion"
+claim_status: [PROPOSED, VERIFIED, QUALIFIED, DISPUTED, UNRESOLVED, REJECTED]

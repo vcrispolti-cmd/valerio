@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Claim (v1.1)",
+  "type": "object",
+  "required": [
+    "claim_id",
+    "text",
+    "claim_type",
+    "importance",
+    "author",
+    "status"
+  ],
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "pattern": "^C\\d{3,}$"
+    },
+    "text": {
+      "type": "string"
+    },
+    "claim_type": {
+      "enum": [
+        "FCT",
+        "DAT",
+        "DEF",
+        "POL",
+        "REL",
+        "CAU",
+        "INT",
+        "FOR",
+        "RSK",
+        "CMP",
+        "REC",
+        "QUO",
+        "UNR"
+      ]
+    },
+    "importance": {
+      "enum": [
+        "CRITICAL",
+        "MATERIAL",
+        "SUPPORTING",
+        "MINOR"
+      ]
+    },
+    "author": {
+      "type": "string",
+      "description": "agent that first proposed the claim (drives independence rules)"
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "VERIFIED",
+        "QUALIFIED",
+        "DISPUTED",
+        "UNRESOLVED",
+        "REJECTED"
+      ]
+    },
+    "approved_wording": {
+      "type": "string"
+    },
+    "current": {
+      "type": "boolean"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "evidence.schema.json"
+      }
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "series": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "connector": {
+            "type": "string"
+          },
+          "formula": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "object"
+          },
+          "data_check": {
+            "enum": [
+              "MATCH",
+              "MISMATCH",
+              "NOT_FOUND",
+              "UNCHECKED",
+              "DERIVED_OK",
+              "DERIVED_MISMATCH"
+            ]
+          },
+          "observed": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "grades": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "S": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^S[0-5]$"
+          },
+          "E": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^E[0-5]$"
+          },
+          "C": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^C[0-5]$"
+          }
+        }
+      }
+    },
+    "audit": {
+      "type": "object"
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "resolved": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "qualifications": {
+      "type": "array"
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendation_chain": {
+      "type": "object",
+      "properties": {
+        "diagnosis": {
+          "type": "string"
+        },
+        "mechanism": {
+          "type": "string"
+        },
+        "objective": {
+          "type": "string"
+        },
+        "instrument": {
+          "type": "string"
+        },
+        "implementation": {
+          "type": "string"
+        },
+        "tradeoff": {
+          "type": "string"
+        }
+      }
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

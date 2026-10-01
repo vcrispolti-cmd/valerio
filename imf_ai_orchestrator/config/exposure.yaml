@@ -1,0 +1,36 @@
+version: "1.1"
+# Information-isolation rules. The orchestrator builds each role's input ONLY
+# from the fields listed here; anything else in the run state is withheld.
+# The fields each call actually received are recorded in audit_log.jsonl.
+#
+# Key design choices:
+# - researcher and analysts are BLIND: they get the question and the neutral
+#   subquestions, never the framer's hypotheses, other tracks, or any thesis.
+# - the source auditor sees individual claims and their cited evidence, never
+#   the narrative, so it cannot be persuaded by prose.
+# - the drafter sees approved claims only, never rejected or unresolved ones
+#   except as an explicit "do not assert" list.
+roles:
+  framer: [research_question, document_type, country, context, constraints, source_policy]
+  framing_challenger: [research_question, document_type, country, framing]
+  researcher: [research_question, neutral_subquestions, country, context, constraints, source_policy, documents]
+  analyst: [research_question, neutral_subquestions, country, context, constraints, documents]
+  registrar: [research_question, candidate_claims, sources, track_outputs]
+  source_auditor: [claims_to_audit, sources, source_policy, as_of]
+  grader: [claims_to_grade, sources, grading_scale]
+  adversarial_reviewer: [research_question, framing, claim_register, sources, track_outputs, issues_so_far]
+  omission_auditor: [research_question, document_type, coverage_checklist, claim_register]
+  synthesizer: [research_question, framing, claim_register, sources, issues_for_disposition, track_outputs]
+  adjudicator: [disputed_issue, relevant_claims, sources]
+  critic_rebuttal: [disputed_issue, relevant_claims, sources]
+  drafter: [research_question, document_type, synthesis, approved_claims, do_not_assert, drafting_standard]
+  substance_reviewer: [draft, approved_claims, do_not_assert]
+  structure_reviewer: [draft, document_type, synthesis]
+  editorial_reviewer: [draft, document_type]
+  reviser: [draft, approved_claims, do_not_assert, issues_for_disposition, drafting_standard]
+  targeted: [targeted_claims, sources, issue, research_question]
+# Fields that may never be sent to the blind roles even if a future edit adds them.
+forbidden:
+  researcher: [framing, track_outputs, synthesis, claim_register, issues_so_far]
+  analyst: [framing, track_outputs, synthesis, claim_register, issues_so_far]
+  source_auditor: [synthesis, draft, track_outputs]

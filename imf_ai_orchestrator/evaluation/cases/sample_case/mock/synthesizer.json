@@ -1,0 +1,33 @@
+{
+  "default": {
+    "thesis": "Arrears fell substantially between end-2023 and end-2025 (C001). Higher collections (C002), a one-off clearance (C004) and the cash waterfall (C005) moved together; the data do not separate their contributions, so the waterfall's role is qualified.",
+    "findings": {
+      "confirmed": [
+        "C001",
+        "C002",
+        "C003",
+        "C004",
+        "C006"
+      ],
+      "qualified": [
+        "C005"
+      ],
+      "competing": [],
+      "unresolved": [
+        "C009"
+      ],
+      "rejected": [
+        "C010"
+      ]
+    },
+    "policy_implications": [
+      {
+        "text": "Move tariffs toward cost recovery with targeted support.",
+        "claim_ids": [
+          "C007"
+        ]
+      }
+    ],
+    "dispositions": []
+  }
+}

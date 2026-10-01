@@ -1,0 +1,13 @@
+{
+  "issues": [
+    {
+      "claim_ids": [
+        "C005"
+      ],
+      "category": "drafting",
+      "severity": "RED",
+      "description": "'The cash waterfall drove the reduction in arrears' is stronger than approved C005 ('appears to have contributed'); the following sentence adds an unsupported 'unprecedented' claim.",
+      "proposed_resolution": "Restore the approved wording of C005 and delete the untagged sentence."
+    }
+  ]
+}

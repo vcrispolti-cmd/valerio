@@ -1,0 +1,29 @@
+version: "1.1"
+# Hard gate, checked before EVERY transmission to an external model, including
+# manual mode (pasting a prompt into a chatbot is a transmission).
+# Mock mode never transmits anything and is always allowed.
+#
+# Defaults are deliberately conservative. Only an institutional decision can
+# open INTERNAL or higher: set external_ai_allowed: true, list the approved
+# providers, and record the approval reference. The gate refuses to open a
+# class whose approval_reference is empty.
+classes:
+  PUBLIC:
+    external_ai_allowed: true
+    approval_reference: "Public material only (published reports, legislation, released data)."
+    # DeepSeek's hosted service: queries reveal what staff are working on even
+    # when the material is public. Keep it listed only if your institution's
+    # policy permits it; otherwise delete it here and the solver will reassign.
+    approved_providers: [openai, google, anthropic, deepseek, perplexity, microsoft]
+  INTERNAL:
+    external_ai_allowed: false
+    approval_reference: ""
+    approved_providers: []
+  CONFIDENTIAL:
+    external_ai_allowed: false
+    approval_reference: ""
+    approved_providers: []
+  RESTRICTED:
+    external_ai_allowed: false
+    approval_reference: ""
+    approved_providers: []

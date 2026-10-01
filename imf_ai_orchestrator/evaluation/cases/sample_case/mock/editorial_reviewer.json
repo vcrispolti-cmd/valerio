@@ -1,0 +1,12 @@
+{
+  "issues": [
+    {
+      "claim_ids": [],
+      "category": "editorial",
+      "severity": "YELLOW",
+      "description": "MEDIUM: define 'cash waterfall' at first use.",
+      "proposed_resolution": "Add a short definition."
+    }
+  ],
+  "score": 85
+}

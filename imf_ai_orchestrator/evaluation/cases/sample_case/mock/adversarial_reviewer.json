@@ -1,0 +1,26 @@
+{
+  "default": {
+    "overall": "Facts are well sourced. The causal story is under-identified and rival explanations are not recorded in the register.",
+    "issues": [
+      {
+        "claim_ids": [
+          "C005"
+        ],
+        "category": "causal",
+        "severity": "RED",
+        "description": "C005 lists no rival explanations; the clearance (C004) mechanically lowers the stock and may dominate.",
+        "proposed_resolution": "Record rival explanations and keep the hedged wording."
+      },
+      {
+        "claim_ids": [
+          "C004"
+        ],
+        "category": "factual",
+        "severity": "YELLOW",
+        "description": "Confirm whether the securitization is recorded as a stock clearance in the arrears series.",
+        "proposed_resolution": "Re-verify against the primary source."
+      }
+    ],
+    "would_sign_off": false
+  }
+}

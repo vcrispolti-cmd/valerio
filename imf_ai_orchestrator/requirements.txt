@@ -1,0 +1,3 @@
+PyYAML>=6.0
+# optional: PDF source text extraction for quote verification
+pypdf>=4.0

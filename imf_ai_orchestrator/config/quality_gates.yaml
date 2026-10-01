@@ -1,0 +1,60 @@
+version: "1.1"
+# The gate is computed by Python from the run state. Models never declare a
+# product "passed". Each dimension is labelled DETERMINISTIC (computed from the
+# register/draft) or MODEL_JUDGED (a reviewer's score). Model-judged dimensions
+# are shown separately on the dashboard so they cannot hide a weak register.
+score_weights:
+  evidence_integrity: 25        # DETERMINISTIC
+  source_quality: 15            # DETERMINISTIC
+  analytical_validity: 20       # DETERMINISTIC
+  internal_consistency: 10      # DETERMINISTIC (draft audit)
+  imf_drafting_quality: 15      # MODEL_JUDGED
+  counterargument_robustness: 10  # DETERMINISTIC
+  auditability: 5               # DETERMINISTIC
+thresholds:
+  green: 85
+  yellow: 70
+# Claim-level pass rule (applies to CRITICAL and MATERIAL claims).
+claim_thresholds:
+  CRITICAL: {source_authority_min: S4, evidence_support_min: E4}
+  MATERIAL: {source_authority_min: S3, evidence_support_min: E3}
+# Minimum causal grade required by the strongest causal phrase in the wording
+# (see strength.yaml causal ladder levels).
+causal_wording_requirements:
+  1: C0   # coincided with
+  2: C1   # was associated with
+  3: C2   # may / appears to have contributed
+  4: C3   # likely contributed
+  5: C3   # contributed to, led to
+  6: C4   # key driver, drove
+  7: C5   # caused, was responsible for
+# Graders disagreeing by this many notches triggers a YELLOW issue.
+grade_disagreement_notches: 2
+# Claims about current conditions using sources older than this are OUTDATED.
+vintage_max_age_days:
+  DAT: 548
+  FCT: 730
+  POL: 365
+  FOR: 365
+  default: 1095
+# Quote matching: share of quote tokens that must be found, in order, in the source.
+quote_match_threshold: 0.92
+# Relative tolerance for numeric data checks.
+numeric_tolerance: 0.005
+automatic_red_conditions:
+  RED-1: "Critical claim with E0/E1 evidence"
+  RED-2: "Critical numerical claim not verified against data or a matching excerpt"
+  RED-3: "Material citation not confirmed (source missing/unreadable or quote not found)"
+  RED-4: "Causal wording stronger than the causal grade allows"
+  RED-5: "Recommendation depends on an unresolved, rejected or failing claim"
+  RED-6: "Unexplained contradiction between authoritative (S4+) sources"
+  RED-7: "Draft contains material content not mapped to an approved claim"
+  RED-8: "Draft changes date, number, unit, scope, attribution or causal strength without authorization"
+  RED-9: "Staff appraisal introduces claims not established in the main analysis"
+  RED-10: "Outdated source for a claim presented as current"
+  RED-11: "RED issue not resolved (no disposition, accepted but not fixed, or escalated)"
+  RED-12: "Self-certification: a material claim verified only by its own model family"
+  RED-13: "Mandatory coverage item missing without justification"
+iteration:
+  max_substantive_cycles: 3
+human_signoff_required_from_level: 2

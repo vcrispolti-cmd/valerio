@@ -1,0 +1,35 @@
+version: "1.1"
+# Targeted iteration: an issue is routed by category to ROLES (not brands).
+# Only the affected claims are sent; the rest of the work is not re-run.
+routes:
+  factual: [source_auditor]
+  source_gap: [researcher, source_auditor]
+  numeric: [source_auditor]
+  causal: [analyst, adversarial_reviewer]
+  alternative: [analyst, adversarial_reviewer]
+  analytical: [analyst, adversarial_reviewer]
+  grading: [grader]
+  coverage: [researcher, analyst]
+  framing: [framer]
+  synthesis: [synthesizer]
+  drafting: [drafter, substance_reviewer]
+  editorial: [editorial_reviewer]
+# Task levels. The level is the MAX of the user's request and the rule-based
+# minimum (orchestrator/classify.py): the system can escalate, never downgrade.
+levels:
+  0: {label: "Factual retrieval", stages: [frame, research, register, verify, audit, grade, gate]}
+  1: {label: "Factual / forensic", stages: [frame, challenge_framing, research, register, verify, audit, grade, review, synthesize, gate]}
+  2: {label: "Analytical question", stages: [frame, challenge_framing, research, analysis, register, verify, audit, grade, review, omissions, synthesize, adjudicate, gate]}
+  3: {label: "Major analytical product", stages: [frame, challenge_framing, research, analysis, register, verify, audit, grade, review, omissions, synthesize, adjudicate, gate, draft, draft_review, revise, final_audit, final_gate]}
+  4: {label: "High-stakes / forensic", stages: [frame, challenge_framing, research, analysis, register, verify, audit, grade, review, review_second, omissions, synthesize, adjudicate, gate, draft, draft_review, revise, final_audit, final_gate]}
+classification_rules:
+  # Minimum level triggered by keywords in the question or by document type.
+  keywords:
+    1: ["exactly", "verify", "was it", "did the", "legal", "law", "decree", "budget"]
+    2: ["why", "explain", "explains", "driver", "drivers", "impact", "effect", "cause", "implication", "assess"]
+    4: ["debt sustainability", "dsa", "conditionality", "program", "programme", "arrears to the fund", "misreporting", "default", "restructuring", "allegation", "disputed"]
+  document_types:
+    analytical_question: 2
+    policy_note: 3
+    selected_issues_paper: 3
+    staff_report: 4

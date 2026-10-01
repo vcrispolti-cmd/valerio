@@ -1,0 +1,90 @@
+version: "1.1"
+# Roles are assigned to agents by a constraint solver (orchestrator/roles.py),
+# not hard-wired by brand. `prefer` is an ordered preference list; the solver
+# takes the first agents that satisfy every constraint and are permitted by the
+# confidentiality gate. If no assignment satisfies the constraints the run
+# stops: it never silently lets a model check its own work.
+#
+# Constraints:
+#   count                 number of distinct agents for the role
+#   distinct_within       the agents in this role must be of different families
+#   distinct_family_from  must not share a family with the agents in these roles
+#   per_claim_independent at run time, for each claim, exclude agents of the
+#                         same family as the agent that proposed the claim
+#   rotate                shuffle `prefer` with the run's rotation seed (for
+#                         experiments; see evaluation/)
+roles:
+  synthesizer:
+    prefer: [chatgpt, claude, gemini]
+    count: 1
+    duty: "Integrates the approved claim register into findings and a thesis. Cannot grade claims or approve wording."
+  drafter:
+    prefer: [chatgpt, claude, gemini]
+    count: 1
+    duty: "Writes the document strictly from approved wording; tags every material sentence with claim IDs."
+  framer:
+    prefer: [chatgpt, claude, gemini]
+    count: 1
+    duty: "Turns the question into a research specification: subquestions, definitions, rival hypotheses, falsification tests."
+  framing_challenger:
+    prefer: [deepseek, claude, gemini]
+    count: 1
+    distinct_family_from: [framer]
+    duty: "Tests whether the question embeds its answer and what the framing leaves out."
+  researcher:
+    prefer: [gemini, perplexity, claude]
+    count: 1
+    duty: "Blind evidence search: builds the evidence universe with verbatim excerpts."
+  analyst:
+    prefer: [deepseek, claude, chatgpt, gemini]
+    count: 2
+    distinct_within: true
+    distinct_family_from: [framer, researcher]
+    duty: "Blind, first-principles analysis of mechanisms and rival explanations."
+  registrar:
+    prefer: [gemini, deepseek, claude]
+    count: 1
+    distinct_family_from: [synthesizer, drafter]
+    duty: "Merges candidate claims into one register and proposes approved wording no stronger than the evidence."
+  source_auditor:
+    prefer: [perplexity, gemini, claude, deepseek]
+    count: 1
+    per_claim_independent: true
+    duty: "Claim-by-claim forensic verification; must quote the supporting passage verbatim."
+  grader:
+    prefer: [claude, gemini, deepseek, chatgpt]
+    count: 2
+    distinct_within: true
+    per_claim_independent: true
+    duty: "Assigns S/E/C grades independently; the conservative (minimum) grade is used."
+  adversarial_reviewer:
+    prefer: [claude, deepseek, gemini]
+    count: 1
+    distinct_family_from: [synthesizer, drafter, registrar]
+    duty: "Attacks the analysis: why might it be wrong, overstated or incomplete?"
+  omission_auditor:
+    prefer: [gemini, deepseek, claude]
+    count: 1
+    distinct_family_from: [synthesizer]
+    duty: "Checks the coverage map: what a competent reviewer would expect that is missing."
+  adjudicator:
+    prefer: [gemini, deepseek, claude]
+    count: 1
+    distinct_family_from: [synthesizer]
+    duty: "Third-party ruling when the synthesizer rejects a critique and the critic upholds it."
+  substance_reviewer:
+    prefer: [claude, deepseek, gemini]
+    count: 1
+    distinct_family_from: [drafter]
+    duty: "Checks the draft says nothing stronger than the register supports."
+  structure_reviewer:
+    prefer: [gemini, claude, deepseek]
+    count: 1
+    distinct_family_from: [drafter]
+    duty: "Narrative and structure review of the draft (not by the drafter's own family)."
+  editorial_reviewer:
+    # Editorial only: it may not change substance, so independence from the
+    # drafter is not required. Copilot is the default because of Word workflows.
+    prefer: [copilot, claude, gemini]
+    count: 1
+    duty: "Institutional and editorial polish; flags, never makes, substantive changes."

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence (v1.1)",
+  "type": "object",
+  "required": [
+    "source_id",
+    "excerpt"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "VERBATIM passage; checked by code against the retrieved source"
+    },
+    "locator": {
+      "type": "string"
+    },
+    "relation": {
+      "enum": [
+        "supports",
+        "partial",
+        "contradicts"
+      ]
+    },
+    "proposed_by": {
+      "type": "string"
+    },
+    "quote_check": {
+      "enum": [
+        "FOUND",
+        "FOUND_APPROX",
+        "NOT_FOUND",
+        "SOURCE_UNAVAILABLE",
+        "NOT_CHECKED"
+      ]
+    },
+    "match_score": {
+      "type": "number"
+    }
+  }
+}

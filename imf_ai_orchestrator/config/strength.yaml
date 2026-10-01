@@ -1,0 +1,38 @@
+version: "1.1"
+# Wording-strength ladders used by the claim-strengthening detector
+# (orchestrator/strength.py). Phrases are matched case-insensitively on word
+# boundaries; the strongest level present in a sentence is its level.
+# Extend these lists with your department's house vocabulary.
+ladders:
+  causal:
+    1: ["coincided with", "occurred alongside", "at the same time as"]
+    2: ["was associated with", "were associated with", "is associated with", "correlated with", "linked to"]
+    3: ["may have contributed", "might have contributed", "could have contributed", "appears to have contributed", "appear to have contributed", "seems to have contributed", "may have helped", "appears to have helped", "possibly contributed"]
+    4: ["likely contributed", "probably contributed", "likely helped", "is likely to have contributed"]
+    # Descriptive verbs (rose, fell, improved) are deliberately NOT here: they describe change, not cause.
+    5: ["contributed to", "helped", "led to", "resulted in", "due to", "owing to", "reflecting", "reflected", "brought about", "was behind"]
+    6: ["key driver", "main driver", "primary driver", "drove", "driven by", "was the main factor", "largely explains"]
+    7: ["caused", "was responsible for", "explains", "is the reason", "determined"]
+  epistemic:
+    1: ["is consistent with", "suggests", "suggest", "indicates", "indicate", "points to", "hints at"]
+    2: ["shows", "show", "demonstrates", "demonstrate", "establishes", "establish", "confirms", "confirm", "proves", "prove", "makes clear"]
+  probability:
+    1: ["may", "might", "could", "possibly", "potentially", "there is a risk that"]
+    2: ["likely", "probably", "is expected to", "are expected to"]
+    3: ["will", "certainly", "inevitably", "is bound to", "is certain to"]
+  scope:
+    1: ["some", "several", "a few", "a number of", "certain"]
+    2: ["many", "most", "the majority of", "widespread"]
+    3: ["all", "every", "the entire", "system-wide", "economy-wide", "universally"]
+  precision:
+    # Level 1 = approximate; removing these before a number is "false precision".
+    1: ["about", "around", "approximately", "roughly", "close to", "nearly", "almost"]
+# Words that need explicit verification wherever they appear (drafting rule R9/R10).
+inflation_terms: ["clearly", "obviously", "dramatic", "dramatically", "disastrous", "unprecedented", "first-ever", "the first", "largest", "the only", "unique", "historic", "massive", "crisis"]
+# Attribution subjects: a change between these groups is ATTRIBUTION_CHANGED.
+attribution:
+  staff: ["staff assesses", "staff's assessment", "staff expects", "staff recommends", "staff considers", "staff views", "staff's analysis", "staff projects", "staff estimates", "staff"]
+  authorities: ["the authorities", "authorities noted", "authorities expect", "authorities committed", "authorities indicated", "the government", "the ministry", "the central bank"]
+  board: ["directors", "the executive board", "the board"]
+  external: ["market participants", "analysts", "rating agencies", "commentators"]
+negation: ["not", "no", "never", "neither", "nor", "did not", "does not", "has not", "have not", "cannot", "unlikely"]

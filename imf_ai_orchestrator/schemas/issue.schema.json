@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Issue (v1.1)",
+  "type": "object",
+  "required": [
+    "issue_id",
+    "raised_by",
+    "stage",
+    "category",
+    "severity",
+    "description",
+    "status"
+  ],
+  "properties": {
+    "issue_id": {
+      "type": "string"
+    },
+    "raised_by": {
+      "type": "string"
+    },
+    "stage": {
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "factual",
+        "source_gap",
+        "numeric",
+        "causal",
+        "alternative",
+        "analytical",
+        "grading",
+        "coverage",
+        "framing",
+        "synthesis",
+        "drafting",
+        "editorial",
+        "security"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "RED",
+        "YELLOW",
+        "GREEN"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "claim_ids": {
+      "type": "array"
+    },
+    "proposed_resolution": {
+      "type": "string"
+    },
+    "disposition": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "enum": [
+            "ACCEPTED",
+            "PARTIAL",
+            "REJECTED",
+            "ACCEPTED_ON_RULING"
+          ]
+        },
+        "by": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        }
+      }
+    },
+    "rebuttal": {
+      "type": "object",
+      "properties": {
+        "verdict": {
+          "enum": [
+            "UPHELD",
+            "WITHDRAWN"
+          ]
+        },
+        "by": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "ruling": {
+      "type": "object",
+      "properties": {
+        "verdict": {
+          "enum": [
+            "FOR_CRITIC",
+            "FOR_SYNTHESIZER",
+            "ESCALATE"
+          ]
+        },
+        "by": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "OPEN",
+        "RESOLVED",
+        "HUMAN_REQUIRED"
+      ]
+    },
+    "key": {
+      "type": "string"
+    },
+    "resolution_note": {
+      "type": "string"
+    }
+  }
+}

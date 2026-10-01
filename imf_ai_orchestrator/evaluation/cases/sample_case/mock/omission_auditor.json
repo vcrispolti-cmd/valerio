@@ -1,0 +1,60 @@
+{
+  "default": {
+    "items": [
+      {
+        "id": "COV-FRAME",
+        "status": "COVERED",
+        "claim_ids": [],
+        "note": "Framer premise check"
+      },
+      {
+        "id": "COV-FACTS",
+        "status": "COVERED",
+        "claim_ids": [
+          "C001",
+          "C002"
+        ]
+      },
+      {
+        "id": "COV-RIVALS",
+        "status": "COVERED",
+        "claim_ids": [
+          "C005"
+        ]
+      },
+      {
+        "id": "COV-MECH",
+        "status": "COVERED",
+        "claim_ids": [
+          "C005"
+        ]
+      },
+      {
+        "id": "COV-DATA",
+        "status": "COVERED",
+        "claim_ids": [],
+        "note": "Attribution limits disclosed"
+      },
+      {
+        "id": "COV-RISK",
+        "status": "COVERED",
+        "claim_ids": [
+          "C008"
+        ]
+      },
+      {
+        "id": "COV-IMPL",
+        "status": "COVERED",
+        "claim_ids": [
+          "C007"
+        ]
+      }
+    ],
+    "additional_omissions": [
+      {
+        "description": "No check of whether arrears were reclassified or re-measured during the period.",
+        "severity": "YELLOW"
+      }
+    ]
+  }
+}

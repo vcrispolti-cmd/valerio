@@ -1,0 +1,53 @@
+version: "1.1"
+# Coverage maps: what a competent reviewer expects a product of each type to
+# address. The omission auditor must mark every item COVERED (with claim IDs),
+# NOT_APPLICABLE (with a reason) or MISSING. Items marked `mandatory` that are
+# MISSING trigger RED-13. `requires_claim_types` adds a deterministic check:
+# the approved register must contain a claim of one of those types for the
+# item to count as covered.
+# These lists are a starting point: tailor them to your department's templates.
+document_types:
+  analytical_question:
+    - {id: COV-FRAME, label: "Question tested for embedded premises", mandatory: true}
+    - {id: COV-FACTS, label: "Key facts and data, with vintages", mandatory: true, requires_claim_types: [FCT, DAT]}
+    - {id: COV-RIVALS, label: "At least two rival explanations assessed", mandatory: true}
+    - {id: COV-MECH, label: "Transmission mechanism stated", mandatory: true}
+    - {id: COV-DATA, label: "Data limitations and staff-vs-official differences disclosed", mandatory: true}
+    - {id: COV-RISK, label: "Risks and uncertainty", mandatory: true, requires_claim_types: [RSK]}
+    - {id: COV-IMPL, label: "Policy implications follow from diagnosis", mandatory: false, requires_claim_types: [REC]}
+  selected_issues_paper:
+    - {id: COV-FRAME, label: "Question tested for embedded premises", mandatory: true}
+    - {id: COV-FACTS, label: "Stylized facts with sources and vintages", mandatory: true, requires_claim_types: [FCT, DAT]}
+    - {id: COV-LIT, label: "Relevant literature, including dissenting findings", mandatory: true}
+    - {id: COV-RIVALS, label: "Rival explanations assessed", mandatory: true}
+    - {id: COV-ID, label: "Identification strategy and its limits", mandatory: true}
+    - {id: COV-MECH, label: "Macro-financial transmission channels", mandatory: true}
+    - {id: COV-FISCAL, label: "Fiscal implications", mandatory: false}
+    - {id: COV-FIN, label: "Financial-sector implications", mandatory: false}
+    - {id: COV-EXT, label: "External-sector implications", mandatory: false}
+    - {id: COV-DIST, label: "Distributional effects", mandatory: false}
+    - {id: COV-CLIM, label: "Climate considerations where relevant", mandatory: false}
+    - {id: COV-PE, label: "Political economy and implementation capacity", mandatory: true}
+    - {id: COV-DATA, label: "Data weaknesses, corrective action, staff-vs-official differences", mandatory: true}
+    - {id: COV-RISK, label: "Risks with mechanism and severity", mandatory: true, requires_claim_types: [RSK]}
+    - {id: COV-REC, label: "Recommendations: what, why, how, who, when, trade-offs", mandatory: true, requires_claim_types: [REC]}
+  staff_report:
+    - {id: COV-FRAME, label: "Central message stated up front", mandatory: true}
+    - {id: COV-DEV, label: "Recent developments with data vintages", mandatory: true, requires_claim_types: [FCT, DAT]}
+    - {id: COV-OUTLOOK, label: "Outlook: staff projections distinguished from authorities'", mandatory: true, requires_claim_types: [FOR]}
+    - {id: COV-RISK, label: "Risk assessment with mechanisms", mandatory: true, requires_claim_types: [RSK]}
+    - {id: COV-FISCAL, label: "Fiscal policy and debt sustainability", mandatory: true}
+    - {id: COV-MON, label: "Monetary and exchange rate policy", mandatory: true}
+    - {id: COV-FIN, label: "Financial sector", mandatory: true}
+    - {id: COV-EXT, label: "External sector assessment", mandatory: true}
+    - {id: COV-STRUCT, label: "Structural policies", mandatory: false}
+    - {id: COV-DATA, label: "Data adequacy, weaknesses and corrective action", mandatory: true}
+    - {id: COV-VIEWS, label: "Authorities' views distinct from staff's", mandatory: true}
+    - {id: COV-APPRAISAL, label: "Staff appraisal follows from the analysis", mandatory: true}
+    - {id: COV-REC, label: "Recommendations actionable and prioritized", mandatory: true, requires_claim_types: [REC]}
+  policy_note:
+    - {id: COV-FRAME, label: "Decision question stated", mandatory: true}
+    - {id: COV-FACTS, label: "Key facts with sources", mandatory: true, requires_claim_types: [FCT, DAT]}
+    - {id: COV-OPTIONS, label: "Options and trade-offs", mandatory: true}
+    - {id: COV-RISK, label: "Risks", mandatory: true, requires_claim_types: [RSK]}
+    - {id: COV-REC, label: "Recommendation", mandatory: true, requires_claim_types: [REC]}

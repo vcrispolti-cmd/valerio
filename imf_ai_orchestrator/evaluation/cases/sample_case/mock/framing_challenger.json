@@ -1,0 +1,12 @@
+{
+  "loaded_premises": [],
+  "missing_subquestions": [
+    "Were arrears reclassified or re-measured during the period?"
+  ],
+  "missing_hypotheses": [
+    {
+      "statement": "Statistical reclassification of arrears",
+      "mechanism": "Definition change lowers measured stock"
+    }
+  ]
+}

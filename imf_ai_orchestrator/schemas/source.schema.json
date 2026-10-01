@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source (v1.1)",
+  "type": "object",
+  "required": [
+    "source_id",
+    "title",
+    "authority_grade",
+    "status"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "institution": {
+      "type": "string"
+    },
+    "publication_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "data_vintage": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "local_path": {
+      "type": "string"
+    },
+    "authority_grade": {
+      "pattern": "^S[0-5]$"
+    },
+    "status": {
+      "enum": [
+        "CONFIRMED",
+        "UNAVAILABLE",
+        "UNREADABLE",
+        "UNCHECKED"
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "description": "hash of the retrieved text: proves which version was checked"
+    },
+    "retrieved_at": {
+      "type": "string"
+    },
+    "proposed_by": {
+      "type": "string"
+    },
+    "limitations": {
+      "type": "array"
+    }
+  }
+}

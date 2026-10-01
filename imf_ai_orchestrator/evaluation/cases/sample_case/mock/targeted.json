@@ -1,0 +1,19 @@
+{
+  "deepseek": {
+    "updates": [
+      {
+        "claim_id": "C005",
+        "new_evidence": [],
+        "proposed_wording": "",
+        "alternatives": [
+          "One-off arrears clearance of 0.9 percent of GDP (C004) mechanically reduced the stock",
+          "Higher collections (C002) increased sector cash flow"
+        ],
+        "note": "Rival explanations recorded; wording kept hedged."
+      }
+    ]
+  },
+  "default": {
+    "updates": []
+  }
+}

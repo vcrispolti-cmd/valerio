@@ -1,0 +1,58 @@
+{
+  "research_question": "What explains the change in Country A's energy-sector arrears between end-2023 and end-2025?",
+  "premise_check": [
+    {
+      "premise": "Arrears declined over the period",
+      "established": "yes",
+      "note": "Ministry data report a decline; verify vintage."
+    },
+    {
+      "premise": "The cash waterfall was the main cause",
+      "established": "unclear",
+      "note": "Not established; treat as one hypothesis among several."
+    }
+  ],
+  "neutral_subquestions": [
+    "How did arrears evolve, by creditor and in percent of GDP, from end-2023 to end-2025?",
+    "How did collections, tariffs, and transfers evolve over the same period?",
+    "What one-off operations affected the stock of arrears?",
+    "What do the available data allow us to attribute to each factor?"
+  ],
+  "definitions": [
+    {
+      "term": "arrears",
+      "definition": "Overdue payment obligations of the distribution company",
+      "source": "MoF report"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Cash waterfall improved payment discipline",
+      "mechanism": "Revenue allocation priority",
+      "would_be_falsified_by": "No change in flow arrears after March 2024"
+    },
+    {
+      "id": "H2",
+      "statement": "Higher collections",
+      "mechanism": "More cash in the sector",
+      "would_be_falsified_by": "Collections flat"
+    },
+    {
+      "id": "H3",
+      "statement": "One-off clearance reduced the stock",
+      "mechanism": "Securitization",
+      "would_be_falsified_by": "No clearance operation"
+    }
+  ],
+  "falsification_tests": [
+    "Compare flow arrears before and after March 2024"
+  ],
+  "evidence_requirements": [
+    {
+      "need": "Arrears stock by year",
+      "preferred_source": "MoF",
+      "series": "ARREARS_GDP"
+    }
+  ]
+}
