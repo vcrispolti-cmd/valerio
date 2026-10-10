@@ -12,6 +12,8 @@ Style guide for drafting in the voice of IMF staff documents: Article IV staff r
 - United States 2026 Article IV, Staff Report (IMF Country Report No. 26/76)
 - IEO, *The IMF and Fragile States* (2018)
 
+Mechanical and editorial rules come from the *IMF Editorial Style Guide*, 2nd edition (2024). They are condensed in `styles/imf-style-editorial.md`.
+
 Where institutional guidance and an exemplar differ, current Fund guidance prevails.
 
 ---
@@ -21,8 +23,9 @@ Where institutional guidance and an exemplar differ, current Fund guidance preva
 1. **Identify the product.** Possible products are an Article IV staff report or staff appraisal, a policy note, an SDN or selected issues paper, a WEO/GFSR-type outlook, an IEO-type evaluation, a concluding statement, a program document, or a short note or email. Apply the product rules in §10.
 2. **Never fabricate.** Do not invent data, dates, estimates, authorities' positions, or citations. Where a number or fact is needed but not provided, insert a bracketed placeholder such as `[X] percent of GDP` or `[authorities' view to be confirmed]` and flag it.
 3. **Draft the governing argument first.** Write one sentence stating the central issue and staff's judgment, then build the architecture (§5) around it.
-4. **Run the checklist (§12)** before handing back the draft, including the 30-second test.
-5. When revising the user's own text, **preserve the policy position and legal meaning**. Flag any change that could alter substance instead of making it silently.
+4. **Apply the editorial rules** in `styles/imf-style-editorial.md` (IMF Editorial Style Guide, 2nd edition). Decide first whether the product is a **publication** or a **staff report / policy note**, because a few conventions differ.
+5. **Run the checklist (§12)** before handing back the draft, including the 30-second test.
+6. When revising the user's own text, **preserve the policy position and legal meaning**. Flag any change that could alter substance instead of making it silently.
 
 ---
 
@@ -183,7 +186,7 @@ Reserve the strongest forms for macro-critical, time-sensitive items.
 
 **Endorsing language:**
 
-- "it was appropriate for the Fed to…"
+- "it was appropriate for the Fed to…" (quoted from a staff report; in publications write "Federal Reserve")
 - "Recent improvements in … are welcome. However, further actions will be needed…"
 - "…has benefited the economy and should be maintained."
 
@@ -261,43 +264,64 @@ These are GFSR-style. Use full-sentence bullets, each making one judgment with i
 
 ---
 
-## 7. Mechanical conventions (IMF house style)
+## 7. Mechanical conventions
 
-**Numbers and units:**
+The full mechanical rules are in **`styles/imf-style-editorial.md`**, a condensed version of the *IMF Editorial Style Guide*, 2nd edition (2024). Apply that file to every draft. Its scope table says which rules change for staff reports and policy notes compared with publications.
 
-- Write "percent", not "%", in running text, and "percentage point(s)" for differences: "revised … downward by 0.5 percentage point to 2.8 percent".
-- Use "percent of GDP" and the format "7–7½ percent of GDP".
-- Write fractions as ½ and ¼ in ranges and approximations: "about 1½ percent", "3½–4 percent".
-- Use an en dash for ranges: "2025–26", "2020–31", "7–7½ percent".
+Rules that come up most often:
 
-**Dates and periods:**
+**Numbers:**
+- Write "percent", never "%" in text.
+- "0.5 percentage point" is singular at 1 or less; "1.25 percentage points" is plural above 1.
+- Fractions are fine: "about 1½ percent", "3½–4 percent of GDP".
+- Spell out numbers below 10, except for percentages, ratios, and money.
 
-- Quarters and halves: "Q4", "2027H1", "Q4/Q4 basis".
-- Name vintages explicitly: "the April 2025 World Economic Outlook (WEO)", "the July WEO Update".
+**Ranges and dashes:**
+- En-dash ranges: "2025–26", "1990–2010".
+- Hyphenated ratios: "debt-to-GDP ratio".
+- Hyphenate a compound adjective before a noun ("medium-term outlook") but not after it ("over the medium term").
+
+**Dates:**
+- In publication text, write "in the fourth quarter of 2025" and "the second half of 2027". Keep "2025:Q4" and "2027:H2" for figures and tables.
+- Staff reports tolerate "Q4" and "2027H1".
+- Name flagship vintages: "the April 2025 *World Economic Outlook*", "the July 2025 *World Economic Outlook Update*". Italicize the report and keep the database roman.
+
+**Names and references:**
+- Write "the IMF" in publications. Staff reports also use "the Fund".
+- Write "the IMF staff" with a plural verb in publications, and "staff" without an article in staff reports.
+- Write "$100", since the US dollar is assumed. Staff reports commonly use "US$".
+- Write "the United States" as a noun; "US" is an adjective only.
+- Write "Federal Reserve", not "the Fed". Write "euro area", "advanced economies", "emerging market and developing economies".
+
+**Banned forms:**
+- No contractions.
+- No "e.g.", "i.e.", "etc.", or "et al."; write "for example", "that is", "and so on", "and others".
+- No "and/or", "via", "utilize", or "additionally".
+- No "impact" as a general noun or verb (use "effect" or "affect").
+- No "due to" except after a verb.
+- No "following" when "after" is meant.
 
 **Abbreviations:**
+- Define at first use only if the term is used three or more times in that section, and define again in each chapter, box, and figure note.
+- Drop ad hoc abbreviations such as "GFC".
+- Always write in full "global financial crisis", "sub-Saharan Africa", and "*World Economic Outlook*"; GDP is never spelled out.
 
-- Define at first use, then use the short form: "geoeconomic fragmentation (GEF)", "net international investment position (NIIP)".
-- Common IMF abbreviations: AEs, EMDEs, LICs, FCS, GVCs, NBFIs, DSA, ESA, IMS, GFSN, TA, CD.
+**Lists and punctuation:**
+- Use the serial comma.
+- Number run-in lists (1), (2), (3).
+- A vertical list takes a full-sentence lead-in ending in a colon.
 
-**Terms of reference:**
+**Headings:**
+- Headline-style capitalization, and they should state a finding where possible ("A Financial System Tested by Higher Inflation and Interest Rates").
+- Publications do not number headings and do not bold paragraph lead sentences.
+- Staff reports use numbered paragraphs with bold leads, sections "A.", "B.", and run-in "**Authorities' views.**" paragraphs.
 
-- "staff" has no article in IMF usage: "staff's long-standing policy advice", "staff estimates", "staff recommends".
-- Write "the authorities" (for the country), "the Fund" / "the IMF", "the Executive Board" / "the Board", "Management".
+**Figures and tables:**
+- Each needs a number, a what–where–when title (plus an optional narrative head stating the takeaway), a unit line, "Source(s):" with "IMF staff calculations" last, then "Note:", and an in-text callout.
 
-**Spelling and currency:** US spelling. Write "US$100 billion".
-
-**Staff report numbering:**
-
-- Number paragraphs sequentially: 1., 2., …
-- Label sections as "A.", "B.", …, under Roman-numeral parts.
-- Mark an "**Authorities' views.**" paragraph with an italic or bold run-in heading.
+**Citations:** Chicago author–date, for example "(Bandara and Yu 2003; IMF 2023)" or "Mahler and others (2021)".
 
 **Closing formula of an Article IV staff appraisal:** "It is recommended that the next Article IV consultation take place on the standard 12-month cycle."
-
-**Headings** should state a finding or decision question where possible. Examples: "A Financial System Tested by Higher Inflation and Interest Rates", "Global Economy in Flux, Prospects Remain Dim".
-
-**Figure titles** should carry the takeaway, not just the variable.
 
 ---
 
@@ -441,7 +465,7 @@ Use this when revising a draft.
 - [ ] **Appraisal:** integrates, prioritizes, and makes the formal recommendation, with no new major judgments.
 - [ ] **Compression:** no repetition, data dumping, empty qualifiers, or generic catalogs.
 - [ ] **Integrity:** no unsupported facts, invented causality, or altered policy stance. Placeholders are flagged.
-- [ ] **House style:** "percent", "percentage point", ½ and ¼ fractions, en-dash ranges, "staff" without article, abbreviations defined, US spelling.
+- [ ] **House style:** the copyediting pass in `styles/imf-style-editorial.md` §14 is done, using the right column of its scope table for staff reports and policy notes.
 
 **Senior-review questions:**
 

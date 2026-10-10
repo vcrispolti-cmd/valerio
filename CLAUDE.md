@@ -4,4 +4,4 @@ Named writing styles live in `styles/`. When the user asks to draft, write, or r
 
 | Style name | File | Use for |
 |---|---|---|
-| IMF-style | `styles/imf-style.md` | IMF staff reports, policy notes, SDNs, WEO/GFSR-type text, IEO-type evaluations, concluding statements |
+| IMF-style | `styles/imf-style.md` + `styles/imf-style-editorial.md` (mechanics) | IMF staff reports, policy notes, SDNs, WEO/GFSR-type text, IEO-type evaluations, concluding statements |
