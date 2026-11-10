@@ -8,5 +8,5 @@ urlpatterns = [
     path("", views.catalogo_landing, name="landing"),
     path("opere/", views.opera_browse, name="browse_all"),
     path("opere/<slug:sezione_slug>/", views.opera_browse, name="browse"),
-    path("opera/<str:numero_archivio>/", views.opera_detail, name="detail"),
+    path("opera/<str:numero_scheda>/", views.opera_detail, name="detail"),
 ]

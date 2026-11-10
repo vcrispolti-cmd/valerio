@@ -225,10 +225,15 @@ class FonteBibliografica(LegacyIdMixin, models.Model):
 class Opera(LegacyIdMixin, models.Model):
     """A single work — the core catalog record."""
 
-    numero_scheda = models.CharField(max_length=100, blank=True)
-    numero_archivio = models.CharField(
-        "Numero di archivio", max_length=100, unique=True,
+    numero_scheda = models.CharField(
+        "Numero di scheda", max_length=100, unique=True,
         help_text="Identificativo permanente dell'opera, usato anche nell'URL pubblico.",
+    )
+    numero_archivio = models.CharField(
+        "Numero di archivio", max_length=100, blank=True,
+        help_text="Identificativo secondario/storico (campo 'Numero_Archivio' in Access) — "
+        "non usato come chiave pubblica: su alcune schede non coincide col numero di scheda "
+        "(es. manca l'indicazione dell'anno), discrepanza presente già nella fonte.",
     )
     titolo = models.TextField()
     tipo_opera = models.ForeignKey(
@@ -279,12 +284,12 @@ class Opera(LegacyIdMixin, models.Model):
     fonti = models.ManyToManyField(FonteBibliografica, through="RiferimentoBibliografico", related_name="opere")
 
     class Meta:
-        ordering = ["anno_testo", "numero_archivio"]
+        ordering = ["anno_testo", "numero_scheda"]
         verbose_name = "Opera"
         verbose_name_plural = "Opere"
 
     def __str__(self):
-        return f"{self.numero_archivio} — {self.titolo}"
+        return f"{self.numero_scheda} — {self.titolo}"
 
     @property
     def immagini_con_file(self):
@@ -340,7 +345,7 @@ class Immagine(LegacyIdMixin, models.Model):
         verbose_name_plural = "Immagini"
 
     def __str__(self):
-        return f"Immagine {self.ordine_visualizzazione} — {self.opera.numero_archivio}"
+        return f"Immagine {self.ordine_visualizzazione} — {self.opera.numero_scheda}"
 
 
 class OperaMostra(LegacyIdMixin, models.Model):
@@ -368,7 +373,7 @@ class OperaMostra(LegacyIdMixin, models.Model):
         # legitimate cases of the same work appearing twice at one venue-stop.
 
     def __str__(self):
-        return f"{self.opera.numero_archivio} @ {self.mostra_sede}"
+        return f"{self.opera.numero_scheda} @ {self.mostra_sede}"
 
     @property
     def esposizione_html(self):
@@ -425,7 +430,7 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
         # distinct (opera, fonte) pairs have more than one citation row.
 
     def __str__(self):
-        return f"{self.opera.numero_archivio} — {self.fonte}"
+        return f"{self.opera.numero_scheda} — {self.fonte}"
 
     @property
     def citazione_html(self):

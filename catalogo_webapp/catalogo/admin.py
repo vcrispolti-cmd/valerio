@@ -41,13 +41,13 @@ class OperaMostraInline(admin.TabularInline):
 
 @admin.register(Opera)
 class OperaAdmin(admin.ModelAdmin):
-    list_display = ("numero_archivio", "titolo", "tipo_opera", "anno_testo", "pubblicata")
+    list_display = ("numero_scheda", "titolo", "tipo_opera", "anno_testo", "pubblicata")
     list_filter = ("tipo_opera", "pubblicata", "collezione__tipo")
-    search_fields = ("numero_archivio", "numero_scheda", "titolo", "tecnica")
+    search_fields = ("numero_scheda", "numero_archivio", "titolo", "tecnica")
     autocomplete_fields = ["collezione"]
     inlines = [ImmagineInline, BibliografiaInline, OperaMostraInline]
     fieldsets = (
-        (None, {"fields": ("numero_archivio", "numero_scheda", "titolo", "tipo_opera", "pubblicata")}),
+        (None, {"fields": ("numero_scheda", "numero_archivio", "titolo", "tipo_opera", "pubblicata")}),
         ("Datazione", {"fields": ("anno_testo", ("anno_inizio", "anno_fine"))}),
         ("Tecnica e dimensioni", {
             "fields": (

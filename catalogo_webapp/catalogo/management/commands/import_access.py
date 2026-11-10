@@ -376,28 +376,32 @@ class Command(BaseCommand):
         default_tipo_opera, _ = TipoOpera.objects.get_or_create(
             slug="da-classificare", defaults={"nome": "Da classificare", "ordine": 999},
         )
-        seen_numero_archivio = set(
-            Opera.objects.exclude(legacy_id=None).values_list("legacy_id", "numero_archivio")
+        # numero_scheda is the public/unique identifier (used in URLs) — Numero_Archivio is
+        # kept only as a secondary reference field, since on 13 of 129 real records it
+        # disagrees with Numero_Scheda (missing year prefix, or in a few cases a genuinely
+        # different number) and isn't reliably unique in the source data either.
+        seen_numero_scheda = set(
+            Opera.objects.exclude(legacy_id=None).values_list("legacy_id", "numero_scheda")
         )
-        existing_na = {na for _, na in seen_numero_archivio}
+        existing_ns = {ns for _, ns in seen_numero_scheda}
 
         for row in mdb_export(accdb_path, "Opere"):
             legacy_id = parse_int(row["ID_Opera"])
             anno_inizio, anno_fine = parse_year_range(row.get("Anno"))
 
-            numero_archivio = (row.get("Numero_Archivio") or "").strip()
-            if not numero_archivio:
-                numero_archivio = f"SENZA-NUMERO-{legacy_id}"
-                stats.warn(f"Opere ID_Opera={legacy_id}: Numero_Archivio mancante, assegnato '{numero_archivio}'")
-            elif numero_archivio in existing_na and (legacy_id, numero_archivio) not in seen_numero_archivio:
-                original = numero_archivio
-                numero_archivio = f"{numero_archivio}-DUP{legacy_id}"
-                stats.warn(f"Opere ID_Opera={legacy_id}: Numero_Archivio '{original}' duplicato, reso univoco come '{numero_archivio}'")
-            existing_na.add(numero_archivio)
+            numero_scheda = (row.get("Numero_Scheda") or "").strip()
+            if not numero_scheda:
+                numero_scheda = f"SENZA-NUMERO-{legacy_id}"
+                stats.warn(f"Opere ID_Opera={legacy_id}: Numero_Scheda mancante, assegnato '{numero_scheda}'")
+            elif numero_scheda in existing_ns and (legacy_id, numero_scheda) not in seen_numero_scheda:
+                original = numero_scheda
+                numero_scheda = f"{numero_scheda}-DUP{legacy_id}"
+                stats.warn(f"Opere ID_Opera={legacy_id}: Numero_Scheda '{original}' duplicato, reso univoco come '{numero_scheda}'")
+            existing_ns.add(numero_scheda)
 
             fields = dict(
-                numero_scheda=row.get("Numero_Scheda") or "",
-                numero_archivio=numero_archivio,
+                numero_scheda=numero_scheda,
+                numero_archivio=row.get("Numero_Archivio") or "",
                 titolo=row.get("Titolo") or "",
                 anno_testo=row.get("Anno") or "",
                 anno_inizio=anno_inizio,

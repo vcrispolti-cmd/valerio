@@ -49,7 +49,7 @@ def opera_browse(request, sezione_slug=None):
     )
 
 
-def opera_detail(request, numero_archivio):
+def opera_detail(request, numero_scheda):
     opera = get_object_or_404(
         Opera.objects.select_related("tipo_opera", "collezione").prefetch_related(
             "immagini__tipo_immagine",
@@ -57,7 +57,7 @@ def opera_detail(request, numero_archivio):
             "operamostra_set__mostra_sede__mostra__tipo_esposizione",
             "operamostra_set__mostra_sede__sede",
         ),
-        numero_archivio=numero_archivio,
+        numero_scheda=numero_scheda,
         pubblicata=True,
     )
 
@@ -94,15 +94,15 @@ def opera_detail(request, numero_archivio):
     # what you'd hit moving forward through that section's grid.
     siblings = list(
         Opera.objects.filter(pubblicata=True, tipo_opera=opera.tipo_opera)
-        .values_list("numero_archivio", flat=True)
+        .values_list("numero_scheda", flat=True)
     )
     prev_opera = next_opera = None
-    if numero_archivio in siblings:
-        idx = siblings.index(numero_archivio)
+    if numero_scheda in siblings:
+        idx = siblings.index(numero_scheda)
         if idx > 0:
-            prev_opera = Opera.objects.filter(numero_archivio=siblings[idx - 1]).first()
+            prev_opera = Opera.objects.filter(numero_scheda=siblings[idx - 1]).first()
         if idx < len(siblings) - 1:
-            next_opera = Opera.objects.filter(numero_archivio=siblings[idx + 1]).first()
+            next_opera = Opera.objects.filter(numero_scheda=siblings[idx + 1]).first()
 
     # Chronological, matching the reference scheda — RiferimentoBibliografico's default
     # ordering is by fonte (effectively by author), which scrambles the publication timeline.

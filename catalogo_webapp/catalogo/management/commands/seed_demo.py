@@ -28,7 +28,7 @@ class Command(BaseCommand):
         personale, _ = TipoEsposizione.objects.get_or_create(nome="Personale")
 
         opera1, _ = Opera.objects.update_or_create(
-            numero_archivio="FDC-0001",
+            numero_scheda="FDC-0001",
             defaults=dict(
                 titolo="Paesaggio con figure",
                 tipo_opera=dipinti,
@@ -43,7 +43,7 @@ class Command(BaseCommand):
             ),
         )
         Opera.objects.update_or_create(
-            numero_archivio="FDC-0002",
+            numero_scheda="FDC-0002",
             defaults=dict(
                 titolo="Studio per ritratto",
                 tipo_opera=carta,
