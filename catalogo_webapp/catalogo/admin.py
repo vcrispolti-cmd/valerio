@@ -22,14 +22,14 @@ from .models import (
 class ImmagineInline(admin.TabularInline):
     model = Immagine
     extra = 1
-    fields = ("file", "tipo_immagine", "descrizione", "ordine_visualizzazione", "eliminata")
+    fields = ("file", "tipo_immagine", "segni_particolari", "descrizione", "ordine_visualizzazione", "eliminata")
 
 
 class BibliografiaInline(admin.TabularInline):
     model = RiferimentoBibliografico
     extra = 1
     autocomplete_fields = ["fonte"]
-    fields = ("fonte", "pagina", "tavola", "numero_riproduzione", "note", "da_verificare")
+    fields = ("fonte", "nome_opera_citata", "pagina", "tavola", "numero_riproduzione", "riprodotta", "sala", "note", "da_verificare")
 
 
 class OperaMostraInline(admin.TabularInline):
@@ -56,7 +56,7 @@ class OperaAdmin(admin.ModelAdmin):
                 "dimensioni_note",
             ),
         }),
-        ("Collezione e provenienza", {"fields": ("collezione", "collocazione", "provenienza")}),
+        ("Collezione e provenienza", {"fields": ("collezione", "collocazione", "provenienza", "acquisizioni_prestiti")}),
         ("Firma, iscrizioni e conservazione", {
             "fields": ("firma", "iscrizioni", "stato_conservazione", "note"),
             "classes": ("collapse",),

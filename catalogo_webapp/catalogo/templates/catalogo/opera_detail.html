@@ -20,12 +20,33 @@
           {% endif %}
         {% endwith %}
       </div>
-      {% if opera.immagini_con_file.count > 1 %}
-        <div class="thumbs">
-          {% for img in opera.immagini_con_file %}
-            <img src="{{ img.file.url }}" alt="{{ img.descrizione }}">
+
+      {% if immagini_recto_verso %}
+        <div class="image-group">
+          {% for img in immagini_recto_verso %}
+            <figure class="image-side">
+              <img src="{{ img.file.url }}" alt="{{ img.tipo_immagine.nome|default:opera.titolo }}">
+              <figcaption>
+                {{ img.tipo_immagine.nome|default:"—"|capfirst }}
+                {% if img.segni_particolari %}<span class="segni">Segni: {{ img.segni_particolari }}</span>{% endif %}
+              </figcaption>
+            </figure>
           {% endfor %}
         </div>
+      {% endif %}
+
+      {% if immagini_altre %}
+        <details class="panel image-extra-panel" open>
+          <summary>Documentazione aggiuntiva ({{ immagini_altre|length }})</summary>
+          <div class="image-group">
+            {% for img in immagini_altre %}
+              <figure class="image-side">
+                <img src="{{ img.file.url }}" alt="{{ img.tipo_immagine.nome|default:opera.titolo }}">
+                <figcaption>{{ img.tipo_immagine.nome|default:"Documentazione"|capfirst }}{% if img.descrizione %} — {{ img.descrizione }}{% endif %}</figcaption>
+              </figure>
+            {% endfor %}
+          </div>
+        </details>
       {% endif %}
     </div>
 
@@ -38,8 +59,16 @@
         {% if opera.tecnica %}<div><dt>Tecnica</dt><dd>{{ opera.tecnica }}</dd></div>{% endif %}
         {% if opera.dimensioni_display %}<div><dt>Dimensioni</dt><dd>{{ opera.dimensioni_display }}</dd></div>{% endif %}
         {% if opera.collezione %}<div><dt>Collezione</dt><dd>{{ opera.collezione.nome }}</dd></div>{% endif %}
+        {% if opera.collocazione %}<div><dt>Collocazione</dt><dd>{{ opera.collocazione }}</dd></div>{% endif %}
         {% if opera.provenienza %}<div><dt>Provenienza</dt><dd>{{ opera.provenienza }}</dd></div>{% endif %}
       </dl>
+
+      {% if opera.acquisizioni_prestiti %}
+        <details class="panel" open>
+          <summary>Acquisizioni e prestiti</summary>
+          <p>{{ opera.acquisizioni_prestiti|linebreaksbr }}</p>
+        </details>
+      {% endif %}
 
       {% if opera.note %}
         <details class="panel">
@@ -56,38 +85,49 @@
         </details>
       {% endif %}
 
-      {% with esposizioni=opera.operamostra_set.all %}
-        {% if esposizioni %}
-          <details class="panel" open>
-            <summary>Esposizioni ({{ esposizioni|length }})</summary>
-            <ul>
-              {% for om in esposizioni %}
-                <li>
-                  <strong>{{ om.mostra_sede.mostra.titolo }}</strong>{% if om.mostra_sede.mostra.anno_testo %}, {{ om.mostra_sede.mostra.anno_testo }}{% endif %}
-                  — {{ om.mostra_sede.sede.nome }}{% if om.mostra_sede.sede.citta %}, {{ om.mostra_sede.sede.citta }}{% endif %}
-                  {% if om.numero_catalogo %}(n. cat. {{ om.numero_catalogo }}){% endif %}
-                </li>
-              {% endfor %}
-            </ul>
-          </details>
-        {% endif %}
-      {% endwith %}
+      {% if esposizioni_personali %}
+        <details class="panel" open>
+          <summary>Esposizioni personali ({{ esposizioni_personali|length }})</summary>
+          <ul>
+            {% for om in esposizioni_personali %}
+              <li>{{ om.esposizione_html }}</li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endif %}
 
-      {% with citazioni=opera.bibliografia.all %}
-        {% if citazioni %}
-          <details class="panel" open>
-            <summary>Bibliografia ({{ citazioni|length }})</summary>
-            <ul>
-              {% for cit in citazioni %}
-                <li>
-                  {{ cit.fonte.autore }}, <em>{{ cit.fonte.titolo }}</em>{% if cit.fonte.luogo %}, {{ cit.fonte.luogo }}{% endif %}{% if cit.fonte.editore %}: {{ cit.fonte.editore }}{% endif %}{% if cit.fonte.anno %}, {{ cit.fonte.anno }}{% endif %}{% if cit.pagina %}, p. {{ cit.pagina }}{% endif %}
-                  {% if cit.numero_riproduzione %}<em>(riprodotto, n. {{ cit.numero_riproduzione }})</em>{% endif %}
-                </li>
-              {% endfor %}
-            </ul>
-          </details>
-        {% endif %}
-      {% endwith %}
+      {% if esposizioni_collettive %}
+        <details class="panel" open>
+          <summary>Esposizioni collettive ({{ esposizioni_collettive|length }})</summary>
+          <ul>
+            {% for om in esposizioni_collettive %}
+              <li>{{ om.esposizione_html }}</li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endif %}
+
+      {% if esposizioni_altre %}
+        <details class="panel">
+          <summary>Altre esposizioni ({{ esposizioni_altre|length }})</summary>
+          <ul>
+            {% for om in esposizioni_altre %}
+              <li>{{ om.esposizione_html }}</li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endif %}
+
+      {% if bibliografia %}
+        <details class="panel" open>
+          <summary>Bibliografia ({{ bibliografia|length }})</summary>
+          <ul>
+            {% for cit in bibliografia %}
+              <li>{{ cit.citazione_html }}</li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endif %}
     </div>
   </div>
 

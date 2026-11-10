@@ -143,8 +143,39 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
   overflow: hidden;
 }
 .opera-images .main-image img { width: 100%; height: 100%; object-fit: contain; }
-.opera-images .thumbs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.opera-images .thumbs img { width: 64px; height: 64px; object-fit: cover; border: 1px solid var(--line); }
+
+.opera-images .image-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+.opera-images figure.image-side {
+  margin: 0;
+}
+.opera-images figure.image-side img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  display: block;
+}
+.opera-images figure.image-side figcaption {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+.opera-images figure.image-side .segni {
+  display: block;
+  margin-top: 0.2rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.78rem;
+}
+.image-extra-panel { margin-top: 1.25rem; }
+.image-extra-panel .image-group { margin-top: 1rem; }
 
 .opera-info .archivio { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
 .opera-info h1 { font-family: var(--serif); font-size: 1.75rem; font-weight: 500; margin: 0 0 0.3rem; }
@@ -169,6 +200,7 @@ details.panel summary {
 details.panel[open] summary { color: var(--ink); }
 details.panel ul { margin: 0.75rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; }
 details.panel li { margin-bottom: 0.5rem; }
+details.panel .cit-note { color: var(--muted); font-size: 0.82rem; font-style: italic; }
 
 .breadcrumb { margin-bottom: 1.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
 .breadcrumb a { text-decoration: none; color: var(--muted); }

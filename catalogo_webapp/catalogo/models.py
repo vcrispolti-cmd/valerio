@@ -19,6 +19,8 @@ own forms) is deliberately not modeled — it's UI plumbing for Access, not cata
 the Django site has its own filtering (see filters.py).
 """
 from django.db import models
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 
 
 class LegacyIdMixin(models.Model):
@@ -261,6 +263,11 @@ class Opera(LegacyIdMixin, models.Model):
     )
     collocazione = models.TextField(blank=True)
     provenienza = models.TextField(blank=True)
+    acquisizioni_prestiti = models.TextField(
+        "Acquisizioni e prestiti", blank=True,
+        help_text="Storia di proprietà (acquisizioni, passaggi, prestiti) — campo solo sito, "
+        "compilato manualmente in redazione.",
+    )
     note = models.TextField(blank=True)
 
     pubblicata = models.BooleanField(
@@ -287,7 +294,14 @@ class Opera(LegacyIdMixin, models.Model):
 
     @property
     def immagine_principale(self):
-        return self.immagini_con_file.first()
+        """Prefer the recto image as the lead/thumbnail shot — falls back to whatever's
+        first if there's no image explicitly typed as recto (e.g. sculpture with only a
+        single general view)."""
+        con_file = list(self.immagini_con_file)
+        for img in con_file:
+            if img.tipo_immagine and "recto" in img.tipo_immagine.nome.lower():
+                return img
+        return con_file[0] if con_file else None
 
     @property
     def dimensioni_display(self):
@@ -356,6 +370,23 @@ class OperaMostra(LegacyIdMixin, models.Model):
     def __str__(self):
         return f"{self.opera.numero_archivio} @ {self.mostra_sede}"
 
+    @property
+    def esposizione_html(self):
+        """'1984, <em>Titolo mostra</em>, Sede, Città;' — the committee's corrected reference
+        format (built in Python for the same reason as citazione_html: exact punctuation with
+        no template-whitespace artifacts). Catalog numbers and curator names are deliberately
+        left out — the reference scheda doesn't show them in this list."""
+        mostra = self.mostra_sede.mostra
+        sede = self.mostra_sede.sede
+        segments = []
+        if mostra.anno_testo:
+            segments.append(escape(mostra.anno_testo))
+        segments.append(f"<em>{escape(mostra.titolo)}</em>")
+        luogo = [p for p in (escape(sede.nome), escape(sede.citta)) if p]
+        if luogo:
+            segments.append(", ".join(luogo))
+        return mark_safe(", ".join(segments) + ";")
+
 
 class RiferimentoBibliografico(LegacyIdMixin, models.Model):
     """Work-specific citation (Access: RiferimentiBibliografici). Author/title/publisher data
@@ -370,6 +401,13 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
     pagina = models.CharField(max_length=100, blank=True)
     tavola = models.CharField(max_length=100, blank=True)
     numero_riproduzione = models.CharField(max_length=100, blank=True)
+    riprodotta = models.BooleanField(
+        "Opera riprodotta in questa fonte", default=False,
+        help_text="Spunta se la fonte riproduce l'opera ma non è registrato un numero di "
+        "tavola/riproduzione specifico (compare comunque \"ripr.\" davanti al numero di "
+        "pagina). Se tavola o numero di riproduzione sono compilati, \"ripr.\" compare "
+        "comunque: questo campo serve solo per i casi senza uno di quei due numeri.",
+    )
     sala = models.CharField(max_length=255, blank=True)
     note = models.TextField(blank=True)
     da_verificare = models.BooleanField(default=False)
@@ -388,3 +426,98 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
 
     def __str__(self):
         return f"{self.opera.numero_archivio} — {self.fonte}"
+
+    @property
+    def citazione_html(self):
+        """Full citation line, built in Python (not the template) so punctuation between an
+        arbitrary subset of present/absent fields is always exactly right.
+
+        Format reverse-engineered from the committee's corrected reference text (10 citations
+        for opera 1917 pc280, Nov. 2026 — see Commenti_database.pdf / the project chat):
+        - Exhibition-catalog entries lead with the (italic) title, not an author: "<title>,
+          catalogo della mostra, a cura di X, <free-text 'con testi/note di...'>, Editore,
+          Luogo Anno, ripr. n. N[, p. P];"
+        - Periodical articles: "Autore, <title>, in «Rivista»[, n. N][, Luogo], data[, ripr.]
+          p. P;" — the periodical name takes « » guillemets, not italics, and the "Luogo Anno"
+          no-comma rule only applies to books; periodicals use "Luogo, data" (comma).
+        - Edited-volume-as-whole: "Curatore (a cura di), <title>, Editore, Luogo Anno, ripr.
+          p. P;"
+        - "ripr." (riprodotto) prefixes the locator whenever tavola/numero_riproduzione is set,
+          OR when the 'riprodotta' flag is set by hand — 4 of the 10 reference citations show
+          "ripr. p. X" with no separate tavola/reproduction number at all (while 2 others show
+          a plain "p. X" with no "ripr."), so this genuinely isn't derivable from any other
+          field; it has to be recorded per citation.
+        - A free-text `note` (e.g. "(copertina)") lands right before the final semicolon, not
+          after it: "...ripr. n. 1, (copertina);".
+        """
+        f = self.fonte
+        is_periodico = bool(f.titolo_periodico)
+        is_catalogo_mostra = "mostra" in (f.tipo_fonte or "").lower() or (
+            f.tipo_pubblicazione and "mostra" in f.tipo_pubblicazione.nome.lower()
+        )
+
+        segments = []
+        lead = ""
+        if f.autore:
+            lead = escape(f.autore)
+        elif f.curatore and not is_catalogo_mostra:
+            lead = f"{escape(f.curatore)} (a cura di)"
+
+        titolo = f"<em>{escape(f.titolo)}</em>"
+        if f.titolo_variante:
+            titolo += f" [{escape(f.titolo_variante)}]"
+        segments.append(f"{lead}, {titolo}" if lead else titolo)
+
+        if is_catalogo_mostra:
+            segments.append("catalogo della mostra")
+            if f.curatore:
+                segments.append(f"a cura di {escape(f.curatore)}")
+        if f.contributi:
+            segments.append(escape(f.contributi))
+
+        if is_periodico:
+            segments.append(f"in «{escape(f.titolo_periodico)}»")
+            volume_numero = [p for p in (
+                f"anno {escape(f.volume)}" if f.volume else "",
+                f"n. {escape(f.numero_periodico)}" if f.numero_periodico else "",
+            ) if p]
+            if volume_numero:
+                segments.append(", ".join(volume_numero))
+            if f.luogo:
+                segments.append(escape(f.luogo))
+            data = f.data_pubblicazione or (str(f.anno) if f.anno else "")
+            if data:
+                segments.append(escape(data))
+        else:
+            if f.editore:
+                segments.append(escape(f.editore))
+            luogo_anno = " ".join(p for p in (f.luogo, str(f.anno) if f.anno else "") if p)
+            if luogo_anno:
+                segments.append(escape(luogo_anno))
+
+        citazione = ", ".join(segments)
+
+        locatore = []
+        riprodotta = self.riprodotta
+        if self.tavola:
+            locatore.append(f"tav. n. {escape(self.tavola)}")
+            riprodotta = True
+        elif self.numero_riproduzione:
+            locatore.append(f"n. {escape(self.numero_riproduzione)}")
+            riprodotta = True
+        if self.pagina:
+            locatore.append(f"p. {escape(self.pagina)}")
+        if self.sala:
+            locatore.append(f"sala {escape(self.sala)}")
+        if locatore and riprodotta:
+            locatore[0] = f"ripr. {locatore[0]}"
+        if locatore:
+            citazione += ", " + ", ".join(locatore)
+
+        if self.nome_opera_citata:
+            citazione += f', cit. come "{escape(self.nome_opera_citata)}"'
+
+        if self.note:
+            citazione += f", {escape(self.note)}"
+        citazione += ";"
+        return mark_safe(citazione)

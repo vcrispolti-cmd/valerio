@@ -52,14 +52,42 @@ def opera_browse(request, sezione_slug=None):
 def opera_detail(request, numero_archivio):
     opera = get_object_or_404(
         Opera.objects.select_related("tipo_opera", "collezione").prefetch_related(
-            "immagini",
+            "immagini__tipo_immagine",
             "bibliografia__fonte",
-            "operamostra_set__mostra_sede__mostra",
+            "operamostra_set__mostra_sede__mostra__tipo_esposizione",
             "operamostra_set__mostra_sede__sede",
         ),
         numero_archivio=numero_archivio,
         pubblicata=True,
     )
+
+    # Split into "personali"/"collettive" (the catalogue's own long-standing distinction)
+    # instead of one flat "Esposizioni" list — anything whose TipoEsposizione doesn't say
+    # one or the other (e.g. "Da verificare", or simply not set) falls into "altre". Sorted
+    # chronologically ascending within each group, matching the reference scheda — the
+    # model's default OperaMostra ordering (by mostra_sede id) doesn't reflect exhibition
+    # year at all.
+    esposizioni_personali, esposizioni_collettive, esposizioni_altre = [], [], []
+    for om in sorted(opera.operamostra_set.all(), key=lambda om: om.mostra_sede.mostra.anno_testo or ""):
+        tipo = om.mostra_sede.mostra.tipo_esposizione
+        label = ((tipo.normalizzato or tipo.nome) if tipo else "").lower()
+        if "personal" in label:
+            esposizioni_personali.append(om)
+        elif "collettiv" in label:
+            esposizioni_collettive.append(om)
+        else:
+            esposizioni_altre.append(om)
+
+    # Recto/verso are the work's own front/back; anything else (preparatory stages,
+    # installation shots, exhibition documentation...) is clearly separate "additional"
+    # material — mixing them undistinguished was exactly the complaint.
+    immagini_recto_verso, immagini_altre = [], []
+    for img in opera.immagini_con_file:
+        label = img.tipo_immagine.nome.lower() if img.tipo_immagine else ""
+        if "recto" in label or "verso" in label:
+            immagini_recto_verso.append(img)
+        else:
+            immagini_altre.append(img)
 
     # Prev/next step through published works in the same section, in the model's default
     # (chronological) order — same ordering the browse grid uses, so "next" here matches
@@ -76,8 +104,22 @@ def opera_detail(request, numero_archivio):
         if idx < len(siblings) - 1:
             next_opera = Opera.objects.filter(numero_archivio=siblings[idx + 1]).first()
 
+    # Chronological, matching the reference scheda — RiferimentoBibliografico's default
+    # ordering is by fonte (effectively by author), which scrambles the publication timeline.
+    bibliografia = sorted(opera.bibliografia.all(), key=lambda cit: (cit.fonte.anno or 0, cit.pk))
+
     return render(
         request,
         "catalogo/opera_detail.html",
-        {"opera": opera, "prev_opera": prev_opera, "next_opera": next_opera},
+        {
+            "opera": opera,
+            "prev_opera": prev_opera,
+            "next_opera": next_opera,
+            "esposizioni_personali": esposizioni_personali,
+            "esposizioni_collettive": esposizioni_collettive,
+            "esposizioni_altre": esposizioni_altre,
+            "immagini_recto_verso": immagini_recto_verso,
+            "immagini_altre": immagini_altre,
+            "bibliografia": bibliografia,
+        },
     )
