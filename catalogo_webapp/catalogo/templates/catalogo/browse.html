@@ -31,7 +31,7 @@
 
   <div class="grid">
     {% for opera in opere %}
-      <a class="opera-card" href="{% url 'catalogo:detail' opera.numero_scheda %}">
+      <a class="opera-card" href="{% url 'catalogo:detail' opera.numero_pubblico %}">
         <div class="thumb">
           {% with img=opera.immagine_principale %}
             {% if img %}

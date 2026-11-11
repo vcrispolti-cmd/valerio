@@ -1,6 +1,7 @@
 import re
 
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 
 from .filters import OperaFilter
@@ -78,7 +79,7 @@ def opera_detail(request, numero_scheda):
             "operamostra_set__mostra_sede__mostra__tipo_esposizione",
             "operamostra_set__mostra_sede__sede",
         ),
-        numero_scheda=numero_scheda,
+        Q(numero_scheda=numero_scheda) | Q(numero_archivio=numero_scheda),
         pubblicata=True,
     )
 
@@ -113,17 +114,15 @@ def opera_detail(request, numero_scheda):
     # Prev/next step through published works in the same section, in the model's default
     # (chronological) order — same ordering the browse grid uses, so "next" here matches
     # what you'd hit moving forward through that section's grid.
-    siblings = list(
-        Opera.objects.filter(pubblicata=True, tipo_opera=opera.tipo_opera)
-        .values_list("numero_scheda", flat=True)
-    )
+    siblings = list(Opera.objects.filter(pubblicata=True, tipo_opera=opera.tipo_opera))
+    sibling_ids = [o.numero_pubblico for o in siblings]
     prev_opera = next_opera = None
-    if numero_scheda in siblings:
-        idx = siblings.index(numero_scheda)
+    if opera.numero_pubblico in sibling_ids:
+        idx = sibling_ids.index(opera.numero_pubblico)
         if idx > 0:
-            prev_opera = Opera.objects.filter(numero_scheda=siblings[idx - 1]).first()
+            prev_opera = siblings[idx - 1]
         if idx < len(siblings) - 1:
-            next_opera = Opera.objects.filter(numero_scheda=siblings[idx + 1]).first()
+            next_opera = siblings[idx + 1]
 
     # Chronological, matching the reference scheda — RiferimentoBibliografico's default
     # ordering is by fonte (effectively by author), which scrambles the publication timeline.

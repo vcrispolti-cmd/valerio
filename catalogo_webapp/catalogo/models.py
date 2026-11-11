@@ -294,6 +294,17 @@ class Opera(LegacyIdMixin, models.Model):
         return f"{self.numero_scheda} — {self.titolo}"
 
     @property
+    def numero_pubblico(self):
+        """Public display/URL identifier. Falls back to numero_archivio for the rare
+        numero_scheda collisions (currently just one pair: two different works on the two
+        sides of the same physical sheet) that import_access.py disambiguates with a
+        "-DUP<legacy_id>" suffix for database uniqueness — that suffix is an internal
+        bookkeeping detail and must never leak into what a reader sees."""
+        if re.search(r"-DUP\d+$", self.numero_scheda):
+            return self.numero_archivio
+        return self.numero_scheda
+
+    @property
     def immagini_con_file(self):
         """Images that actually have a file attached — many imported Immagine rows don't yet
         (the Access file only records the original filename/path, not the file itself)."""

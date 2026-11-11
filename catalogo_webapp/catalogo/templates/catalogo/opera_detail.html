@@ -51,7 +51,7 @@
     </div>
 
     <div class="opera-info">
-      <div class="archivio">{{ opera.numero_scheda }} — {{ opera.tipo_opera.nome }}</div>
+      <div class="archivio">{{ opera.numero_pubblico }} — {{ opera.tipo_opera.nome }}</div>
       <h1>{{ opera.titolo }}</h1>
       <div class="anno">{{ opera.anno_testo }}</div>
 
@@ -134,12 +134,12 @@
   {% if prev_opera or next_opera %}
     <nav class="opera-siblings">
       {% if prev_opera %}
-        <a class="prev" href="{% url 'catalogo:detail' prev_opera.numero_scheda %}">&larr; {{ prev_opera.titolo }}</a>
+        <a class="prev" href="{% url 'catalogo:detail' prev_opera.numero_pubblico %}">&larr; {{ prev_opera.titolo }}</a>
       {% else %}
         <span></span>
       {% endif %}
       {% if next_opera %}
-        <a class="next" href="{% url 'catalogo:detail' next_opera.numero_scheda %}">{{ next_opera.titolo }} &rarr;</a>
+        <a class="next" href="{% url 'catalogo:detail' next_opera.numero_pubblico %}">{{ next_opera.titolo }} &rarr;</a>
       {% endif %}
     </nav>
   {% endif %}
