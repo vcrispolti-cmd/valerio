@@ -569,25 +569,41 @@ class Command(BaseCommand):
                 stats.bump("RiferimentiBibliografici", "skipped")
                 continue
 
+            legacy_id = parse_int(row["ID_Bibliografia"])
+            fields = dict(
+                opera=opera,
+                fonte=fonte,
+                nome_opera_citata=row.get("Nome_Opera_Citata") or "",
+                pagina=row.get("Pagina") or "",
+                tavola=row.get("Tavola") or "",
+                numero_riproduzione=row.get("Numero_riproduzione") or "",
+                sala=row.get("Sala") or "",
+                note=row.get("Nota_Bibliografica") or "",
+                da_verificare=parse_bool(row.get("Da_Verificare")),
+            )
             try:
                 with transaction.atomic():
-                    _, created = RiferimentoBibliografico.objects.update_or_create(
-                        legacy_id=parse_int(row["ID_Bibliografia"]),
-                        defaults=dict(
-                            opera=opera,
-                            fonte=fonte,
-                            nome_opera_citata=row.get("Nome_Opera_Citata") or "",
-                            pagina=row.get("Pagina") or "",
-                            tavola=row.get("Tavola") or "",
-                            numero_riproduzione=row.get("Numero_riproduzione") or "",
-                            sala=row.get("Sala") or "",
-                            note=row.get("Nota_Bibliografica") or "",
-                            da_verificare=parse_bool(row.get("Da_Verificare")),
-                            eliminata=parse_bool(row.get("Eliminata")),
-                            data_eliminazione=parse_access_date(row.get("Data_Eliminazione")),
-                            motivo_eliminazione=row.get("Motivo_Eliminazione") or "",
-                        ),
-                    )
+                    existing = RiferimentoBibliografico.objects.filter(legacy_id=legacy_id).first()
+                    if existing is not None and existing.eliminata:
+                        # Sticky like Opera.tipo_opera/pubblicata: a citation flagged
+                        # eliminata from the website (e.g. a duplicate found by comparing
+                        # against a corrected reference) must not be silently resurrected
+                        # by Access's own Eliminata field, which is usually still False —
+                        # Access has no notion of "the website merged this as a dup".
+                        obj, created = existing, False
+                        for k, v in fields.items():
+                            setattr(obj, k, v)
+                        obj.save()
+                    else:
+                        obj, created = RiferimentoBibliografico.objects.update_or_create(
+                            legacy_id=legacy_id,
+                            defaults={
+                                **fields,
+                                "eliminata": parse_bool(row.get("Eliminata")),
+                                "data_eliminazione": parse_access_date(row.get("Data_Eliminazione")),
+                                "motivo_eliminazione": row.get("Motivo_Eliminazione") or "",
+                            },
+                        )
             except IntegrityError as exc:
                 stats.warn(f"RiferimentiBibliografici ID_Bibliografia={row['ID_Bibliografia']}: {exc}")
                 stats.bump("RiferimentiBibliografici", "skipped")

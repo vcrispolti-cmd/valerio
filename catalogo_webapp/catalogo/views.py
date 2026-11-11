@@ -128,7 +128,7 @@ def opera_detail(request, numero_scheda):
     # Chronological, matching the reference scheda — RiferimentoBibliografico's default
     # ordering is by fonte (effectively by author), which scrambles the publication timeline.
     bibliografia = sorted(
-        opera.bibliografia.all(),
+        opera.bibliografia.exclude(eliminata=True),
         key=lambda cit: (cit.fonte.anno or 0, _mese_ordine(cit.fonte.data_pubblicazione), cit.pk),
     )
 

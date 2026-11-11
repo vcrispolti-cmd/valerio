@@ -29,7 +29,7 @@ class BibliografiaInline(admin.TabularInline):
     model = RiferimentoBibliografico
     extra = 1
     autocomplete_fields = ["fonte"]
-    fields = ("fonte", "nome_opera_citata", "pagina", "tavola", "numero_riproduzione", "riprodotta", "sala", "note", "da_verificare")
+    fields = ("fonte", "nome_opera_citata", "pagina", "tavola", "numero_riproduzione", "riprodotta", "sala", "note", "da_verificare", "eliminata", "motivo_eliminazione")
 
 
 class OperaMostraInline(admin.TabularInline):
