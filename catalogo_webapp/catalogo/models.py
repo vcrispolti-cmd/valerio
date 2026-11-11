@@ -488,9 +488,11 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
         elif f.curatore and not is_catalogo_mostra:
             lead = f"{escape(f.curatore)} (a cura di)"
 
+        # titolo_variante is deliberately not shown: the only real case of it turned out
+        # to be the same source title entered twice with different word order/punctuation
+        # (confirmed against the committee's reference — see ID_Fonte=2 fix), not a
+        # genuine "also cited as" annotation worth surfacing publicly.
         titolo = f"<em>{escape(f.titolo)}</em>"
-        if f.titolo_variante:
-            titolo += f" [{escape(f.titolo_variante)}]"
         segments.append(f"{lead}, {titolo}" if lead else titolo)
 
         if is_catalogo_mostra:
