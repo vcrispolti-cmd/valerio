@@ -18,6 +18,8 @@ T_F06_RisultatiRicerca (an Access-internal cached search-results table backing o
 own forms) is deliberately not modeled — it's UI plumbing for Access, not catalog data, and
 the Django site has its own filtering (see filters.py).
 """
+import re
+
 from django.db import models
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -452,8 +454,15 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
           "ripr. p. X" with no separate tavola/reproduction number at all (while 2 others show
           a plain "p. X" with no "ripr."), so this genuinely isn't derivable from any other
           field; it has to be recorded per citation.
-        - A free-text `note` (e.g. "(copertina)") lands right before the final semicolon, not
-          after it: "...ripr. n. 1, (copertina);".
+        - pagina/tavola/numero_riproduzione are used as-is, with NO prefix added here: in the
+          real data they already carry their own label text ("p. 128", "tav. n. 3", "n. 192"
+          — confirmed across 348 real citations, e.g. 189/194 pagina values already start
+          with "p."/"pp."). Adding "p. "/"n. "/"tav. n." again here produced doubled text like
+          "ripr. n. n. 1" the first time this was checked against the real import.
+        - `note` is deliberately NOT rendered here — in the real data it mixes genuinely
+          public annotations ("(copertina)") with internal archive housekeeping text (e.g.
+          "Riassegnato da ID_Fonte 97 alla fonte canonica ID_Fonte 3 durante la pulizia
+          M178."), and there's no reliable field to tell which is which.
         """
         f = self.fonte
         is_periodico = bool(f.titolo_periodico)
@@ -478,14 +487,27 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
             if f.curatore:
                 segments.append(f"a cura di {escape(f.curatore)}")
         if f.contributi:
-            segments.append(escape(f.contributi))
+            contributi = f.contributi
+            # Sometimes a bare "; "-separated name list (needs a lead-in phrase added),
+            # sometimes already a full phrase ("prefazione di X", "Appendici di Y e Z") —
+            # the two patterns are reliably told apart by whether "; " appears at all.
+            if "; " in contributi:
+                nomi = ", ".join(p.strip() for p in contributi.split(";") if p.strip())
+                contributi = f"con testi di {nomi}"
+            segments.append(escape(contributi))
 
         if is_periodico:
             segments.append(f"in «{escape(f.titolo_periodico)}»")
-            volume_numero = [p for p in (
-                f"anno {escape(f.volume)}" if f.volume else "",
-                f"n. {escape(f.numero_periodico)}" if f.numero_periodico else "",
-            ) if p]
+            # volume/numero_periodico are inconsistently pre-labeled in the real data (e.g.
+            # numero_periodico "n. 223", or "anno XVIII, n. 1" with volume left blank) — add
+            # "n. "/"anno " only when the value doesn't already read as labeled.
+            volume_numero = []
+            if f.volume:
+                v = f.volume
+                volume_numero.append(escape(v if re.match(r"^(anno|vol\.)", v, re.I) else f"anno {v}"))
+            if f.numero_periodico:
+                n = f.numero_periodico
+                volume_numero.append(escape(n if re.match(r"^(n\.|anno)", n, re.I) else f"n. {n}"))
             if volume_numero:
                 segments.append(", ".join(volume_numero))
             if f.luogo:
@@ -502,16 +524,19 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
 
         citazione = ", ".join(segments)
 
+        # pagina/tavola/numero_riproduzione already carry their own label text in the real
+        # data ("p. 128", "tav. n. 3", "n. 192") — Access stores them pre-formatted, not as
+        # bare numbers, so nothing here adds a prefix on top of them.
         locatore = []
         riprodotta = self.riprodotta
         if self.tavola:
-            locatore.append(f"tav. n. {escape(self.tavola)}")
+            locatore.append(escape(self.tavola))
             riprodotta = True
         elif self.numero_riproduzione:
-            locatore.append(f"n. {escape(self.numero_riproduzione)}")
+            locatore.append(escape(self.numero_riproduzione))
             riprodotta = True
         if self.pagina:
-            locatore.append(f"p. {escape(self.pagina)}")
+            locatore.append(escape(self.pagina))
         if self.sala:
             locatore.append(f"sala {escape(self.sala)}")
         if locatore and riprodotta:
@@ -522,7 +547,10 @@ class RiferimentoBibliografico(LegacyIdMixin, models.Model):
         if self.nome_opera_citata:
             citazione += f', cit. come "{escape(self.nome_opera_citata)}"'
 
-        if self.note:
-            citazione += f", {escape(self.note)}"
+        # self.note is deliberately NOT auto-appended here: in the real data it mixes
+        # genuinely public annotations ("(copertina)") with internal archive housekeeping
+        # ("Riassegnato da ID_Fonte 97 alla fonte canonica ID_Fonte 3 durante la pulizia
+        # M178.") with no reliable way to tell them apart automatically — each one needs a
+        # curatorial look before it's safe to publish.
         citazione += ";"
         return mark_safe(citazione)

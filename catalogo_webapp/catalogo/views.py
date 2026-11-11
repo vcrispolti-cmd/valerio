@@ -1,3 +1,5 @@
+import re
+
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
 
@@ -5,6 +7,25 @@ from .filters import OperaFilter
 from .models import Opera, TipoOpera
 
 PAGE_SIZE = 24
+
+_MESI = {
+    m: i for i, m in enumerate(
+        ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+         "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
+        start=1,
+    )
+}
+
+
+def _mese_ordine(data_pubblicazione):
+    """Best-effort month number from free-text data_pubblicazione ('maggio-giugno 1989',
+    '24 luglio 1989') — used only to break same-year ties in bibliography order so it
+    matches the reference scheda's chronological-within-year sequence."""
+    testo = (data_pubblicazione or "").lower()
+    for nome, numero in _MESI.items():
+        if nome in testo:
+            return numero
+    return 0
 
 
 def catalogo_landing(request):
@@ -106,7 +127,10 @@ def opera_detail(request, numero_scheda):
 
     # Chronological, matching the reference scheda — RiferimentoBibliografico's default
     # ordering is by fonte (effectively by author), which scrambles the publication timeline.
-    bibliografia = sorted(opera.bibliografia.all(), key=lambda cit: (cit.fonte.anno or 0, cit.pk))
+    bibliografia = sorted(
+        opera.bibliografia.all(),
+        key=lambda cit: (cit.fonte.anno or 0, _mese_ordine(cit.fonte.data_pubblicazione), cit.pk),
+    )
 
     return render(
         request,
